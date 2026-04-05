@@ -1,16 +1,23 @@
 /* Login.css */
 
+/* --- Configurações Gerais/Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Crucial para o padding não quebrar o layout */
+}
+
 /* Centraliza tudo na tela */
 .login-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #71b7e6, #9b59b6);
-  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6); /* Exemplo de gradiente */
+  font-family: 'Poppins', sans-serif; /* Certifique-se de importar a fonte se desejar */
 }
 
-/* Estilização do formulário */
+/* --- Estilização do Formulário --- */
 form {
   background: #ffffff;
   padding: 40px;
@@ -27,39 +34,44 @@ h1 {
   font-size: 2rem;
 }
 
-/* Container dos inputs */
+/* --- SOLUÇÃO PARA OS ÍCONES SOBRE O TEXTO --- */
+
+/* 1. O container dos inputs deve ter posição relativa */
 .input-group, .input-box {
   position: relative;
+  width: 100%;
   margin-bottom: 20px;
 }
 
-/* Estilo dos campos de texto */
+/* 2. Estilo dos Campos de Entrada (Inputs) */
 .input-field {
   width: 100%;
-  padding: 12px 15px 12px 40px; /* Espaço para o ícone */
+  padding: 12px 15px 12px 45px; /* IMPORTANTE: 45px de padding na esquerda para dar espaço ao ícone */
   border: 1px solid #ddd;
   border-radius: 6px;
   outline: none;
   font-size: 16px;
+  color: #333;
   transition: border-color 0.3s ease;
-  box-sizing: border-box; /* Garante que o padding não quebre a largura */
 }
 
+/* Efeito ao focar no input */
 .input-field:focus {
   border-color: #9b59b6;
 }
 
-/* Estilo dos ícones (Boxicons) */
+/* 3. Estilo dos Ícones (Boxicons) */
 .input-group i, .input-box i {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: absolute; /* Fixa o ícone em relação ao container pai */
+  left: 15px; /* Posiciona o ícone 15px da borda esquerda do container */
+  top: 50%; /* Move o topo do ícone para o meio vertical do container */
+  transform: translateY(-50%); /* Centraliza perfeitamente o ícone verticalmente */
   color: #888;
-  font-size: 20px;
+  font-size: 20px; /* Tamanho do ícone */
+  pointer-events: none; /* Garante que o clique passe através do ícone para o input */
 }
 
-/* Estilo do Botão */
+/* --- Estilo do Botão e Link de Cadastro (Mantidos) --- */
 .btn-cadastro {
   width: 100%;
   padding: 12px;
@@ -80,4 +92,21 @@ h1 {
 
 .btn-cadastro:active {
   transform: scale(0.98);
+}
+
+.register-link {
+  font-size: 14.5px;
+  text-align: center;
+  margin: 20px 0 15px;
+  color: #333;
+}
+
+.register-link p a {
+  color: #9b59b6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link p a:hover {
+  text-decoration: underline;
 }

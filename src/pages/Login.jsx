@@ -1,16 +1,14 @@
 import React from "react";
 import "./Login.css";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onNavigateToRegister }) {
   return (
     <div className="login-wrapper">
-      {/* 1. Corrigido de 'from' para 'form' */}
       <form onSubmit={(e) => e.preventDefault()}> 
         <h1>Login</h1>
         
         <div className="input-group">
-          {/* 2. Adicionado 'className' e fechamento '/>' */}
-          <input className="input-field" placeholder="Usuário" type="email" />
+          <input className="input-field" placeholder="        Usuário" type="email" />
           <i className="bx bxs-user"></i>
         </div>
 
@@ -26,6 +24,11 @@ function Login({ onLogin }) {
         >
           Entrar
         </button>
+
+        {/* Novo link para cadastro */}
+        <div className="register-link">
+          <p>Não tem uma conta? <a href="#" onClick={onNavigateToRegister}>Cadastre-se</a></p>
+        </div>
       </form>
     </div>
   );
