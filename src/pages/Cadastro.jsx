@@ -4,7 +4,7 @@ function Cadastro({ onCadastro }) {
   return (
     <div className="cadastro-wrapper">
       <div className="form-container">
-        <form action="#">
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="Form-header">
             <h1>Cadastro</h1>
           </div>
@@ -38,6 +38,34 @@ function Cadastro({ onCadastro }) {
             <div className="input-box">
               <label htmlFor="confirmPassword">Confirmar Senha:</label>
               <input type="password" id="confirmPassword" placeholder="*******" required />
+            </div>
+          </div>
+
+          <div className="gender-inputs">
+            <div className="gender-title">
+              <h6>Gênero:</h6>
+            </div>
+
+            <div className="gender-group">
+              <div className="gender-input">
+                <input type="radio" id="female" name="gender" />
+                <label htmlFor="female">Feminino</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="male" name="gender" />
+                <label htmlFor="male">Masculino</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="other" name="gender" />
+                <label htmlFor="other">Outros</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="none" name="gender" />
+                <label htmlFor="none">Prefiro não informar</label>
+              </div>
             </div>
           </div>
 
