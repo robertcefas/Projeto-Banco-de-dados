@@ -1,26 +1,31 @@
 import React from "react";
 
-// Mude de "function App()" para "function Login()"
 function Cadastro({ onCadastro }) {
   return (
-    <div class="cadastro-wrapper">
-      <from>   
-      <h1>Cadastro</h1>
-      <div class="input-group">
-         <input placeholder="Usuário" type="email">
-         </div>
-      <div class="input-box">
-         <input placeholder="senha" type="password">
-         </div>
+    <div className="cadastro-wrapper">
+      {/* 1. Corrigido de 'from' para 'form' */}
+      <form onSubmit={(e) => e.preventDefault()}> 
+        <h1>Cadastro</h1>
+        
+        <div className="input-group">
+          {/* 2. Adicionado 'className' e fechamento '/>' */}
+          <input className="input-field" placeholder="Usuário" type="email" />
+          <i className="bx bxs-user"></i>
+        </div>
 
-      </from>
-      <button
-        type="button"
-        className="btn-cadastro"
-        onClick={onCadastro} // Aqui é onde a "mágica" acontece para trocar de tela
-      >
-        Cadastrar
-      </button>
+        <div className="input-box">
+          <input className="input-field" placeholder="Senha" type="password" />
+          <i className="bx bxs-lock-alt"></i>
+        </div>
+
+        <button
+          type="button"
+          className="btn-cadastro"
+          onClick={onCadastro}
+        >
+          Cadastrar
+        </button>
+      </form>
     </div>
   );
 }
