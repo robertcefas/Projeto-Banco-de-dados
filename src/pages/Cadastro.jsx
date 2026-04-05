@@ -2,16 +2,10 @@ import React from "react";
 import "./Cadastro.css";
 
 function Cadastro({ onCadastro, onNavigateToLogin }) {
-  // Função para evitar o recarregamento da página ao clicar no botão
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onCadastro();
-  };
-
   return (
     <div className="cadastro-wrapper">
       <div className="form-container">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="Form-header">
             <h1>Cadastro</h1>
           </div>
@@ -52,23 +46,19 @@ function Cadastro({ onCadastro, onNavigateToLogin }) {
             <div className="gender-title">
               <h6>Gênero:</h6>
             </div>
-
             <div className="gender-group">
               <div className="gender-input">
                 <input type="radio" id="female" name="gender" />
                 <label htmlFor="female">Feminino</label>
               </div>
-
               <div className="gender-input">
                 <input type="radio" id="male" name="gender" />
                 <label htmlFor="male">Masculino</label>
               </div>
-
               <div className="gender-input">
                 <input type="radio" id="other" name="gender" />
                 <label htmlFor="other">Outros</label>
               </div>
-
               <div className="gender-input">
                 <input type="radio" id="none" name="gender" />
                 <label htmlFor="none">Prefiro não informar</label>
@@ -77,27 +67,21 @@ function Cadastro({ onCadastro, onNavigateToLogin }) {
           </div>
 
           <button
-            type="submit"
+            type="button"
             className="btn-cadastro"
+            onClick={onCadastro}
           >
             Cadastrar
           </button>
 
-          {/* Link para voltar ao login estilizado pelo Cadastro.css */}
+          {/* NOVO: Link para voltar ao login */}
           <div className="login-link">
-            <p>
-              Já possui uma conta?{" "}
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavigateToLogin();
-                }}
-              >
-                Faça Login
-              </a>
-            </p>
+            <p>Já possui uma conta? <a href="#" onClick={(e) => {
+              e.preventDefault();
+              onNavigateToLogin();
+            }}>Faça Login</a></p>
           </div>
+
         </form>
       </div>
     </div>
