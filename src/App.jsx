@@ -1,20 +1,48 @@
-import { useState } from 'react'
-import Login from './pages/Login'
-import Home from './pages/Home'
-import './App.css'
+import React, { useState } from "react";
+import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
+import "./App.css"; 
 
 function App() {
-  const [logado, setLogado] = useState(false)
+  // Estado que controla qual tela está ativa: "login" ou "cadastro"
+  const [telaAtiva, setTelaAtiva] = useState("login");
+
+  // Funções para mudar de tela
+  const irParaCadastro = () => {
+    setTelaAtiva("cadastro");
+  };
+
+  const irParaLogin = () => {
+    setTelaAtiva("login");
+  };
+
+  // Funções de ação (o que acontece ao clicar nos botões principais)
+  const lidarComLogin = () => {
+    alert("Login realizado com sucesso! Bem-vinda ao Nails for You.");
+    // Aqui você redirecionaria para a Home futuramente
+  };
+
+  const lidarComCadastro = () => {
+    alert("Cadastro concluído! Agora você pode fazer o login.");
+    setTelaAtiva("login"); // Volta para o login após cadastrar
+  };
 
   return (
-    <>
-      {logado ? (
-        <Home />
+    <div className="App">
+      {/* Lógica de Renderização Condicional */}
+      {telaAtiva === "login" ? (
+        <Login 
+          onLogin={lidarComLogin} 
+          onNavigateToRegister={irParaCadastro} 
+        />
       ) : (
-        <Login onLogin={() => setLogado(true)} />
+        <Cadastro 
+          onCadastro={lidarComCadastro} 
+          onNavigateToLogin={irParaLogin} 
+        />
       )}
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
