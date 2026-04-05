@@ -8,7 +8,7 @@ function Login({ onLogin, onNavigateToRegister }) {
         <h1>Login</h1>
         
         <div className="input-group">
-          <input className="input-field" placeholder="        Usuário" type="email" />
+          <input className="input-field" placeholder="Usuário" type="email" />
           <i className="bx bxs-user"></i>
         </div>
 
@@ -19,7 +19,7 @@ function Login({ onLogin, onNavigateToRegister }) {
 
         <button
           type="button"
-          className="btn-login"
+          className="btn-cadastro"
           onClick={onLogin}
         >
           Entrar
