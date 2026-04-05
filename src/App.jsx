@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Login from "./pages/Login";
-import Cadastro from "./pages/Cadastro";
+import Login from "./pages/login/Login";
+import Cadastro from "./pages/cadastro/Cadastro";
 import "./App.css"; 
 
 function App() {
