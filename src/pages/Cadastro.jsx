@@ -3,8 +3,17 @@ import React from "react";
 // Mude de "function App()" para "function Login()"
 function Cadastro({ onCadastro }) {
   return (
-    <div className="cadastro-wrapper">
-      {/* O resto do seu código de cadastro aqui... */}
+    <div class="cadastro-wrapper">
+      <from>   
+      <h1>Cadastro</h1>
+      <div class="input-group">
+         <input placeholder="Usuário" type="email">
+         </div>
+      <div class="input-box">
+         <input placeholder="senha" type="password">
+         </div>
+
+      </from>
       <button
         type="button"
         className="btn-cadastro"
