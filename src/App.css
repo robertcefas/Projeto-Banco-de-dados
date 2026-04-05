@@ -182,3 +182,24 @@
     border-right-color: var(--border);
   }
 }
+/* Isso faz o E-mail e a Senha ficarem em cima dos campos */
+.input-group label {
+  display: block;    /* Ocupa a linha toda, forçando o input para baixo */
+  margin-bottom: 5px; /* Dá um espacinho entre o texto e o campo */
+  text-align: left;  /* Garante que o texto fique na esquerda */
+}
+
+/* Isso garante que o campo de digitar ocupe toda a largura disponível */
+.input-group input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box; /* Evita que o campo "escape" da caixa */
+}
+
+/* Se você quiser que o "Esqueceu a senha?" também desça */
+.label-row {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start;
+}
