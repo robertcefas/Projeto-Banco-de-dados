@@ -1,0 +1,83 @@
+/* Login.css */
+
+/* Centraliza tudo na tela */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Estilização do formulário */
+form {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 2rem;
+}
+
+/* Container dos inputs */
+.input-group, .input-box {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Estilo dos campos de texto */
+.input-field {
+  width: 100%;
+  padding: 12px 15px 12px 40px; /* Espaço para o ícone */
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box; /* Garante que o padding não quebre a largura */
+}
+
+.input-field:focus {
+  border-color: #9b59b6;
+}
+
+/* Estilo dos ícones (Boxicons) */
+.input-group i, .input-box i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 20px;
+}
+
+/* Estilo do Botão */
+.btn-cadastro {
+  width: 100%;
+  padding: 12px;
+  background-color: #9b59b6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-cadastro:hover {
+  background-color: #8e44ad;
+}
+
+.btn-cadastro:active {
+  transform: scale(0.98);
+}
