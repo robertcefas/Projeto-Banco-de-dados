@@ -3,29 +3,53 @@ import React from "react";
 function Cadastro({ onCadastro }) {
   return (
     <div className="cadastro-wrapper">
-      {/* 1. Corrigido de 'from' para 'form' */}
-      <form onSubmit={(e) => e.preventDefault()}> 
-        <h1>Cadastro</h1>
-        
-        <div className="input-group">
-          {/* 2. Adicionado 'className' e fechamento '/>' */}
-          <input className="input-field" placeholder="Usuário" type="email" />
-          <i className="bx bxs-user"></i>
-        </div>
+      <div className="form-container">
+        <form action="#">
+          <div className="Form-header">
+            <h1>Cadastro</h1>
+          </div>
 
-        <div className="input-box">
-          <input className="input-field" placeholder="Senha" type="password" />
-          <i className="bx bxs-lock-alt"></i>
-        </div>
+          <div className="input-group">
+            <div className="input-box">
+              <label htmlFor="firstname">Primeiro Nome:</label>
+              <input type="text" id="firstname" placeholder="Digite seu primeiro nome" required />
+            </div>
 
-        <button
-          type="button"
-          className="btn-cadastro"
-          onClick={onCadastro}
-        >
-          Cadastrar
-        </button>
-      </form>
+            <div className="input-box">
+              <label htmlFor="lastname">Último Nome:</label>
+              <input type="text" id="lastname" placeholder="Digite seu último nome" required />
+            </div>
+
+            <div className="input-box">
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" placeholder="Digite seu email" required />
+            </div>
+
+            <div className="input-box">
+              <label htmlFor="phone">Celular:</label>
+              <input type="tel" id="phone" placeholder="XX XXXX-XXXX" required />
+            </div>
+
+            <div className="input-box">
+              <label htmlFor="password">Senha:</label>
+              <input type="password" id="password" placeholder="*******" required />
+            </div>
+
+            <div className="input-box">
+              <label htmlFor="confirmPassword">Confirmar Senha:</label>
+              <input type="password" id="confirmPassword" placeholder="*******" required />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="btn-cadastro"
+            onClick={onCadastro}
+          >
+            Cadastrar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

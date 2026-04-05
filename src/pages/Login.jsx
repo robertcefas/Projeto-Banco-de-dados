@@ -20,7 +20,7 @@ function Login({ onLogin }) {
 
         <button
           type="button"
-          className="btn-cadastro"
+          className="btn-login"
           onClick={onLogin}
         >
           Entrar
