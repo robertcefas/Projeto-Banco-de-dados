@@ -2,12 +2,10 @@ import React from "react";
 import "./Cadastro.css";
 
 function Cadastro({ onCadastro, onNavigateToLogin }) {
-  
-  // Função para lidar com o envio do formulário
+  // Função para evitar o recarregamento da página ao clicar no botão
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aqui você poderia adicionar uma lógica de validação antes de prosseguir
-    onCadastro(); 
+    onCadastro();
   };
 
   return (
@@ -15,78 +13,69 @@ function Cadastro({ onCadastro, onNavigateToLogin }) {
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="Form-header">
-            <h1>Criar Conta</h1>
+            <h1>Cadastro</h1>
           </div>
 
           <div className="input-group">
-            {/* Primeiro Nome */}
             <div className="input-box">
-              <label htmlFor="firstname">Primeiro Nome</label>
-              <input 
-                type="text" 
-                id="firstname" 
-                placeholder="Ex: Maria" 
-                required 
-              />
+              <label htmlFor="firstname">Primeiro Nome:</label>
+              <input type="text" id="firstname" placeholder="Digite seu primeiro nome" required />
             </div>
 
-            {/* Último Nome */}
             <div className="input-box">
-              <label htmlFor="lastname">Último Nome</label>
-              <input 
-                type="text" 
-                id="lastname" 
-                placeholder="Ex: Silva" 
-                required 
-              />
+              <label htmlFor="lastname">Último Nome:</label>
+              <input type="text" id="lastname" placeholder="Digite seu último nome" required />
             </div>
 
-            {/* Email */}
             <div className="input-box">
-              <label htmlFor="email">E-mail</label>
-              <input 
-                type="email" 
-                id="email" 
-                placeholder="seuemail@exemplo.com" 
-                required 
-              />
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" placeholder="Digite seu email" required />
             </div>
 
-            {/* Celular */}
             <div className="input-box">
-              <label htmlFor="phone">Celular</label>
-              <input 
-                type="tel" 
-                id="phone" 
-                placeholder="(00) 00000-0000" 
-                required 
-              />
+              <label htmlFor="phone">Celular:</label>
+              <input type="tel" id="phone" placeholder="XX XXXX-XXXX" required />
             </div>
 
-            {/* Senha */}
             <div className="input-box">
-              <label htmlFor="password">Senha</label>
-              <input 
-                type="password" 
-                id="password" 
-                placeholder="Crie uma senha" 
-                required 
-              />
+              <label htmlFor="password">Senha:</label>
+              <input type="password" id="password" placeholder="*******" required />
             </div>
 
-            {/* Confirmar Senha */}
             <div className="input-box">
-              <label htmlFor="confirmPassword">Confirmar Senha</label>
-              <input 
-                type="password" 
-                id="confirmPassword" 
-                placeholder="Repita a senha" 
-                required 
-              />
+              <label htmlFor="confirmPassword">Confirmar Senha:</label>
+              <input type="password" id="confirmPassword" placeholder="*******" required />
             </div>
           </div>
 
-          {/* Botão de Finalizar */}
+          <div className="gender-inputs">
+            <div className="gender-title">
+              <h6>Gênero:</h6>
+            </div>
+
+            <div className="gender-group">
+              <div className="gender-input">
+                <input type="radio" id="female" name="gender" />
+                <label htmlFor="female">Feminino</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="male" name="gender" />
+                <label htmlFor="male">Masculino</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="other" name="gender" />
+                <label htmlFor="other">Outros</label>
+              </div>
+
+              <div className="gender-input">
+                <input type="radio" id="none" name="gender" />
+                <label htmlFor="none">Prefiro não informar</label>
+              </div>
+            </div>
+          </div>
+
           <button
             type="submit"
             className="btn-cadastro"
@@ -94,10 +83,10 @@ function Cadastro({ onCadastro, onNavigateToLogin }) {
             Cadastrar
           </button>
 
-          {/* Link para voltar ao Login */}
-          <div className="register-link">
+          {/* Link para voltar ao login estilizado pelo Cadastro.css */}
+          <div className="login-link">
             <p>
-              Já tem uma conta?{" "}
+              Já possui uma conta?{" "}
               <a 
                 href="#" 
                 onClick={(e) => {
