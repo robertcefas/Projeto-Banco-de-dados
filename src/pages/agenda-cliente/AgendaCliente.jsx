@@ -1,95 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AgendaCliente.css';
 
 function AgendaCliente() {
   const navigate = useNavigate();
   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  
+  const [agendamento, setAgendamento] = useState({ servico: '', data: '', hora: '' });
+  const [meusAgendamentos, setMeusAgendamentos] = useState([]);
+  const [servicos, setServicos] = useState([]);
 
-  // Estado para o formulário de agendamento
-  const [agendamento, setAgendamento] = useState({
-    servico: '',
-    data: '',
-    hora: ''
-  });
+  useEffect(() => {
+    const servicosSalvos = JSON.parse(localStorage.getItem('servicos') || '[]');
+    setServicos(servicosSalvos);
 
-  const servicos = [
-    { id: 1, nome: 'Manicure (Mão)', preco: 'R$ 30,00' },
-    { id: 2, nome: 'Pedicure (Pé)', preco: 'R$ 35,00' },
-    { id: 3, nome: 'Combo Pé e Mão', preco: 'R$ 60,00' },
-    { id: 4, nome: 'Alongamento em Gel', preco: 'R$ 120,00' }
-  ];
+    const todosAgendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    const filtrados = todosAgendamentos.filter(ag => ag.clienteEmail === usuarioLogado?.email);
+    setMeusAgendamentos(filtrados);
+  }, [usuarioLogado?.email]);
 
   const handleAgendar = (e) => {
     e.preventDefault();
+    const todosAgendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
 
-    const agendamentosExistentes = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    // --- REGRA DE NEGÓCIO: BLOQUEIO DE DIAS SEGUIDOS ---
+    const novaData = new Date(agendamento.data);
     
-    const novoAgendamento = {
+    const temConflito = todosAgendamentos.some(ag => {
+      if (ag.clienteEmail === usuarioLogado.email && ag.servico === agendamento.servico) {
+        const dataExistente = new Date(ag.data);
+        const diferencaTempo = Math.abs(novaData - dataExistente);
+        const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+        
+        return diferencaDias < 2; // Bloqueia se for no mesmo dia ou no dia seguinte
+      }
+      return false;
+    });
+
+    if (temConflito) {
+      alert(`Erro: Você já tem um agendamento de "${agendamento.servico}" para uma data muito próxima. Escolha um intervalo maior.`);
+      return;
+    }
+
+    const novo = {
       id: Date.now(),
-      clienteNome: usuarioLogado?.nome || 'Cliente',
+      clienteNome: usuarioLogado?.nome,
       clienteEmail: usuarioLogado?.email,
       ...agendamento
     };
 
-    agendamentosExistentes.push(novoAgendamento);
-    localStorage.setItem('agendamentos', JSON.stringify(agendamentosExistentes));
-
-    alert(`Agendamento de ${agendamento.servico} realizado com sucesso!`);
+    const listaAtualizada = [...todosAgendamentos, novo];
+    localStorage.setItem('agendamentos', JSON.stringify(listaAtualizada));
+    setMeusAgendamentos(listaAtualizada.filter(ag => ag.clienteEmail === usuarioLogado?.email));
+    
+    alert("Agendamento realizado com sucesso!");
     setAgendamento({ servico: '', data: '', hora: '' });
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
-    navigate('/');
   };
 
   return (
     <div className="agenda-wrapper">
       <nav className="agenda-nav">
         <span>Bem-vinda, <strong>{usuarioLogado?.nome}</strong></span>
-        <button onClick={handleLogout} className="btn-logout">Sair</button>
+        <button onClick={() => { localStorage.removeItem('usuarioLogado'); navigate('/'); }} className="btn-logout">Sair</button>
       </nav>
 
-      <div className="agenda-container">
-        <h2>Agende seu Horário</h2>
-        <form onSubmit={handleAgendar}>
-          <div className="input-group-agenda">
-            <label>Selecione o Serviço:</label>
-            <select 
-              value={agendamento.servico} 
-              onChange={(e) => setAgendamento({...agendamento, servico: e.target.value})}
-              required
-            >
-              <option value="">Escolha um serviço...</option>
-              {servicos.map(s => (
-                <option key={s.id} value={s.nome}>{s.nome} - {s.preco}</option>
-              ))}
-            </select>
-          </div>
+      <div className="agenda-main">
+        <div className="agenda-container">
+          <h2>Agende seu Horário</h2>
+          <form onSubmit={handleAgendar}>
+            <div className="input-group-agenda">
+              <label>Serviço:</label>
+              <select value={agendamento.servico} onChange={(e) => setAgendamento({...agendamento, servico: e.target.value})} required>
+                <option value="">Escolha um serviço...</option>
+                {servicos.map(s => <option key={s.id} value={s.nome}>{s.nome} - R$ {s.preco}</option>)}
+              </select>
+            </div>
+            <div className="input-group-agenda">
+              <label>Data:</label>
+              <input type="date" value={agendamento.data} onChange={(e) => setAgendamento({...agendamento, data: e.target.value})} required />
+            </div>
+            <div className="input-group-agenda">
+              <label>Hora:</label>
+              <input type="time" value={agendamento.hora} onChange={(e) => setAgendamento({...agendamento, hora: e.target.value})} required />
+            </div>
+            <button type="submit" className="btn-agendar">Confirmar Agendamento</button>
+          </form>
+        </div>
 
-          <div className="input-group-agenda">
-            <label>Data:</label>
-            <input 
-              type="date" 
-              value={agendamento.data}
-              onChange={(e) => setAgendamento({...agendamento, data: e.target.value})}
-              required 
-            />
+        <div className="meus-horarios">
+          <h3>Meus Horários Marcados</h3>
+          <div className="lista-cards">
+            {meusAgendamentos.length === 0 ? (
+              <p>Nenhum horário marcado.</p>
+            ) : (
+              meusAgendamentos.map(ag => (
+                <div key={ag.id} className="card-agendamento">
+                  <strong>{ag.servico}</strong>
+                  <p>📅 {ag.data} ⏰ {ag.hora}</p>
+                </div>
+              ))
+            )}
           </div>
-
-          <div className="input-group-agenda">
-            <label>Horário:</label>
-            <input 
-              type="time" 
-              value={agendamento.hora}
-              onChange={(e) => setAgendamento({...agendamento, hora: e.target.value})}
-              required 
-            />
-          </div>
-
-          <button type="submit" className="btn-agendar">Confirmar Agendamento</button>
-        </form>
+        </div>
       </div>
     </div>
   );
