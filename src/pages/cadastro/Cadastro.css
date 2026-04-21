@@ -1,4 +1,6 @@
-/* --- Container Principal --- */
+/* Cadastro.css */
+
+/* 1. Container Principal */
 .cadastro-wrapper {
   display: flex;
   justify-content: center;
@@ -9,15 +11,15 @@
   padding: 40px 20px;
 }
 
-/* --- Cartão do Formulário --- */
+/* 2. Cartão do Formulário */
 .form-container {
   background: #ffffff;
   padding: 40px;
   border-radius: 15px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 700px; /* Largura ideal para as duas colunas */
-  animation: slideUp 0.5s ease-out;
+  max-width: 750px; /* Mais largo para acomodar o grid de 2 colunas */
+  animation: slideUp 0.6s ease-out;
 }
 
 .Form-header h1 {
@@ -25,23 +27,24 @@
   text-align: center;
   margin-bottom: 30px;
   color: #333;
+  font-weight: 700;
   position: relative;
 }
 
-/* Linha decorativa embaixo do título */
+/* Linha decorativa abaixo do título */
 .Form-header h1::after {
   content: "";
   position: absolute;
-  background-color: #9b59b6;
   height: 3px;
-  width: 50px;
-  bottom: -5px;
+  width: 40px;
+  background: #9b59b6;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 5px;
 }
 
-/* --- Grid de Inputs (2 colunas) --- */
+/* 3. Grid de Inputs (2 colunas) */
 .input-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -59,6 +62,7 @@
   font-weight: 600;
   color: #555;
   margin-bottom: 5px;
+  margin-left: 5px;
 }
 
 .input-box input {
@@ -74,37 +78,40 @@
 .input-box input:focus {
   border-color: #9b59b6;
   background: #fff;
-  box-shadow: 0 0 8px rgba(155, 89, 182, 0.1);
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.15);
 }
 
-/* --- Seção de Gênero (Rádios) --- */
+/* 4. Seção de Gênero (Radio Buttons) */
 .gender-inputs {
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .gender-title h6 {
   font-size: 16px;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-weight: 600;
 }
 
 .gender-group {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap; /* Para não quebrar em telas médias */
-  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap; 
+  gap: 15px;
 }
 
 .gender-input {
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 }
 
 .gender-input input {
   cursor: pointer;
-  accent-color: #9b59b6; /* Muda a cor do rádio para o roxo do tema */
+  accent-color: #9b59b6; /* Cor do rádio combinando com o tema */
+  width: 18px;
+  height: 18px;
 }
 
 .gender-input label {
@@ -114,7 +121,7 @@
   font-weight: 500;
 }
 
-/* --- Botão de Cadastro --- */
+/* 5. Botão de Cadastro */
 .btn-cadastro {
   width: 100%;
   padding: 14px;
@@ -140,23 +147,51 @@
   transform: scale(0.96);
 }
 
-/* --- Responsividade --- */
-@media (max-width: 600px) {
+/* 6. Link de Volta para o Login */
+.login-link {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 15px;
+  color: #666;
+}
+
+.login-link a {
+  text-decoration: none;
+  color: #9b59b6;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.login-link a:hover {
+  color: #71b7e6;
+  text-decoration: underline;
+}
+
+/* 7. Responsividade (Celulares) */
+@media (max-width: 650px) {
   .input-group {
-    grid-template-columns: 1fr; /* Vira uma coluna no celular */
+    grid-template-columns: 1fr; /* Coluna única no mobile */
+    gap: 15px;
   }
 
   .gender-group {
-    flex-direction: column; /* Rádios um embaixo do outro no celular */
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Rádios em 2 colunas no mobile */
   }
-  
+
   .form-container {
     padding: 30px 20px;
   }
 }
 
+/* Animação de Entrada */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
