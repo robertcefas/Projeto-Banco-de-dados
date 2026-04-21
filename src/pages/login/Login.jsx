@@ -1,60 +1,66 @@
-import React from "react";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./Login.css";
 
-function Login({ onLogin, onNavigateToRegister }) {
-  // Impede o recarregamento da página ao clicar no botão ou dar Enter
-  const handleSubmit = (e) => {
+function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const realizarLogin = (e) => {
     e.preventDefault();
-    onLogin();
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const encontrou = usuarios.find(u => u.email === email && u.senha === senha);
+
+    if (encontrou) {
+      localStorage.setItem('usuarioLogado', JSON.stringify(encontrou));
+      if (encontrou.tipo === 'manicure') {
+        navigate('/painel-manicure');
+      } else {
+        navigate('/agenda-cliente');
+      }
+    } else {
+      alert("E-mail ou senha incorretos!");
+    }
   };
 
   return (
     <div className="login-wrapper">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h1>Login</h1>
+      <div className="login-container">
+        <h1>Nails for You</h1>
+        
+        <form onSubmit={realizarLogin}>
+          <div className="login-input-group">
+            <label>E-mail</label>
+            <input 
+              type="email" 
+              placeholder="Digite seu e-mail" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+              required
+            />
+          </div>
 
-        {/* Campo de Usuário com ícone */}
-        <div className="input-box">
-          <input
-            type="email"
-            className="input-field"
-            placeholder="E-mail ou Usuário"
-            required
-          />
-          <i className="bx bxs-user"></i>
-        </div>
+          <div className="login-input-group">
+            <label>Senha</label>
+            <input 
+              type="password" 
+              placeholder="Digite sua senha" 
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)} 
+              required
+            />
+          </div>
 
-        {/* Campo de Senha com ícone */}
-        <div className="input-box">
-          <input
-            type="password"
-            className="input-field"
-            placeholder="Senha"
-            required
-          />
-          <i className="bx bxs-lock-alt"></i>
-        </div>
+          <button type="submit" className="btn-login">
+            Entrar
+          </button>
 
-        <button type="submit" className="btn-login">
-          Entrar
-        </button>
-
-        {/* Link dinâmico para trocar para a tela de Cadastro */}
-        <div className="register-link">
-          <p>
-            Não tem uma conta?{" "}
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigateToRegister();
-              }}
-            >
-              Cadastre-se
-            </a>
-          </p>
-        </div>
-      </form>
+          <div className="signup-link">
+            <p>Não tem conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cadastro'); }}>Cadastre-se aqui</a></p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

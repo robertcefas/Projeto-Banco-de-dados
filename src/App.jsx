@@ -1,47 +1,29 @@
-import React, { useState } from "react";
-import Login from "./pages/Login";
-import Cadastro from "./pages/Cadastro";
-import "./App.css"; 
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PainelManicure from './pages/painel-manicure/PainelManicure';
+// 1. Importações dos componentes REAIS que você criou
+import Login from './pages/login/Login';
+import Cadastro from './pages/cadastro/Cadastro';
+import AgendaCliente from './pages/agenda-cliente/AgendaCliente';
+
 
 function App() {
-  // Estado que controla qual tela está ativa: "login" ou "cadastro"
-  const [telaAtiva, setTelaAtiva] = useState("login");
-
-  // Funções para mudar de tela
-  const irParaCadastro = () => {
-    setTelaAtiva("cadastro");
-  };
-
-  const irParaLogin = () => {
-    setTelaAtiva("login");
-  };
-
-  // Funções de ação (o que acontece ao clicar nos botões principais)
-  const lidarComLogin = () => {
-    alert("Login realizado com sucesso! Bem-vinda ao Nails for You.");
-    // Aqui você redirecionaria para a Home futuramente
-  };
-
-  const lidarComCadastro = () => {
-    alert("Cadastro concluído! Agora você pode fazer o login.");
-    setTelaAtiva("login"); // Volta para o login após cadastrar
-  };
-
   return (
-    <div className="App">
-      {/* Lógica de Renderização Condicional */}
-      {telaAtiva === "login" ? (
-        <Login 
-          onLogin={lidarComLogin} 
-          onNavigateToRegister={irParaCadastro} 
-        />
-      ) : (
-        <Cadastro 
-          onCadastro={lidarComCadastro} 
-          onNavigateToLogin={irParaLogin} 
-        />
-      )}
-    </div>
+    <Router>
+      <Routes>
+        {/* Rota inicial: Login */}
+        <Route path="/" element={<Login />} />
+        
+        {/* Rota de Cadastro */}
+        <Route path="/cadastro" element={<Cadastro />} />
+        
+        {/* Rota da Agenda (Cliente logado) */}
+        <Route path="/agenda-cliente" element={<AgendaCliente />} />
+        
+        {/* Rota do Painel (Manicure/Admin logado) */}
+        <Route path="/painel-manicure" element={<PainelManicure />} />
+      </Routes>
+    </Router>
   );
 }
 

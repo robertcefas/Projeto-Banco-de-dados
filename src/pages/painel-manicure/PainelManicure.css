@@ -1,0 +1,72 @@
+.painel-wrapper {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.painel-nav {
+  background: #6c3483; /* Roxo mais escuro para o Admin */
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.painel-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.painel-container h2 {
+  margin-bottom: 25px;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.tabela-responsiva {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  background: #f4f4f4;
+  padding: 12px;
+  color: #555;
+  font-weight: 600;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.btn-concluir {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-concluir:hover {
+  background: #219150;
+}
+
+.sem-dados {
+  text-align: center;
+  color: #888;
+  padding: 40px;
+}

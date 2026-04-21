@@ -1,0 +1,76 @@
+.agenda-wrapper {
+  min-height: 100vh;
+  background: #f4f7f6;
+}
+
+.agenda-nav {
+  background: #9b59b6;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.btn-logout {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid white;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.agenda-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.agenda-container h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.input-group-agenda {
+  margin-bottom: 20px;
+}
+
+.input-group-agenda label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.input-group-agenda select, 
+.input-group-agenda input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  outline: none;
+}
+
+.btn-agendar {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(to right, #9b59b6, #8e44ad);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-agendar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+}
