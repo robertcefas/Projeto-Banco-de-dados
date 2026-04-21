@@ -1,102 +1,194 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AgendaCliente.css';
 
 function AgendaCliente() {
   const navigate = useNavigate();
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  
+  const [servicos, setServicos] = useState([]);
   const [agendamento, setAgendamento] = useState({ servico: '', data: '', hora: '' });
   const [meusAgendamentos, setMeusAgendamentos] = useState([]);
-  const [servicos, setServicos] = useState([]);
+  const [configAgenda, setConfigAgenda] = useState(null);
+  const [mostrarHoras, setMostrarHoras] = useState(false);
+  const [agendadoComSucesso, setAgendadoComSucesso] = useState(false);
+
+  const dataRef = new Date();
+  const [mesAtivo, setMesAtivo] = useState(dataRef.getMonth());
+  const [anoAtivo, setAnoAtivo] = useState(dataRef.getFullYear());
+  const [diasVisiveis, setDiasVisiveis] = useState([]);
+
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+  // Função central para garantir que o agendamento SEMPRE apareça
+  const atualizarListaAgendamentos = useCallback(() => {
+    if (!usuarioLogado) return;
+    const todos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    // Filtra apenas os agendamentos do cliente logado
+    const filtrados = todos.filter(a => a.clienteEmail === usuarioLogado.email);
+    setMeusAgendamentos(filtrados);
+  }, [usuarioLogado]);
 
   useEffect(() => {
-    const servicosSalvos = JSON.parse(localStorage.getItem('servicos') || '[]');
-    setServicos(servicosSalvos);
+    if (!usuarioLogado) {
+      navigate('/');
+      return;
+    }
+    setServicos(JSON.parse(localStorage.getItem('servicos') || '[]'));
+    setConfigAgenda(JSON.parse(localStorage.getItem('configAgenda')));
+    atualizarListaAgendamentos();
+  }, [navigate, atualizarListaAgendamentos]);
 
-    const todosAgendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-    const filtrados = todosAgendamentos.filter(ag => ag.clienteEmail === usuarioLogado?.email);
-    setMeusAgendamentos(filtrados);
-  }, [usuarioLogado?.email]);
+  useEffect(() => {
+    const ultimoDia = new Date(anoAtivo, mesAtivo + 1, 0).getDate();
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
 
-  const handleAgendar = (e) => {
+    const dias = [];
+    for (let i = 1; i <= ultimoDia; i++) {
+      const dataISO = `${anoAtivo}-${String(mesAtivo + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const bloqueado = configAgenda?.datasBloqueadas?.includes(dataISO);
+      const passado = new Date(dataISO + "T00:00:00") < hoje;
+      dias.push({ dataISO, numero: i, disponivel: !bloqueado && !passado });
+    }
+    setDiasVisiveis(dias);
+  }, [mesAtivo, anoAtivo, configAgenda]);
+
+  const gerarHorasDinamicas = () => {
+    const inicio = configAgenda?.horaInicio ? parseInt(configAgenda.horaInicio.split(':')[0]) : 9;
+    const fim = configAgenda?.horaFim ? parseInt(configAgenda.horaFim.split(':')[0]) : 18;
+    const horas = [];
+    for (let h = inicio; h < fim; h++) {
+      horas.push(`${String(h).padStart(2, '0')}:00`);
+    }
+    return horas;
+  };
+
+  const finalizarAgendamento = (e) => {
     e.preventDefault();
-    const todosAgendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-
-    // --- REGRA DE NEGÓCIO: BLOQUEIO DE DIAS SEGUIDOS ---
-    const novaData = new Date(agendamento.data);
-    
-    const temConflito = todosAgendamentos.some(ag => {
-      if (ag.clienteEmail === usuarioLogado.email && ag.servico === agendamento.servico) {
-        const dataExistente = new Date(ag.data);
-        const diferencaTempo = Math.abs(novaData - dataExistente);
-        const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
-        
-        return diferencaDias < 2; // Bloqueia se for no mesmo dia ou no dia seguinte
-      }
-      return false;
-    });
-
-    if (temConflito) {
-      alert(`Erro: Você já tem um agendamento de "${agendamento.servico}" para uma data muito próxima. Escolha um intervalo maior.`);
+    if (!agendamento.servico || !agendamento.data || !agendamento.hora) {
+      alert("Por favor, selecione o serviço, o dia e o horário.");
       return;
     }
 
-    const novo = {
-      id: Date.now(),
-      clienteNome: usuarioLogado?.nome,
-      clienteEmail: usuarioLogado?.email,
-      ...agendamento
+    const novo = { 
+      id: Date.now(), 
+      clienteNome: usuarioLogado.nome, 
+      clienteEmail: usuarioLogado.email, 
+      ...agendamento 
     };
-
-    const listaAtualizada = [...todosAgendamentos, novo];
-    localStorage.setItem('agendamentos', JSON.stringify(listaAtualizada));
-    setMeusAgendamentos(listaAtualizada.filter(ag => ag.clienteEmail === usuarioLogado?.email));
     
-    alert("Agendamento realizado com sucesso!");
-    setAgendamento({ servico: '', data: '', hora: '' });
+    const banco = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    localStorage.setItem('agendamentos', JSON.stringify([...banco, novo]));
+    
+    setAgendadoComSucesso(true);
+    atualizarListaAgendamentos(); // Atualiza a lista imediatamente após agendar
   };
 
+  const cancelarHorario = (id, dataAg, horaAg) => {
+    const agora = new Date();
+    const dataHoraAtendimento = new Date(`${dataAg}T${horaAg}`);
+    const diffHoras = (dataHoraAtendimento - agora) / (1000 * 60 * 60);
+
+    if (diffHoras < 2) {
+      alert("Cancelamento indisponível: Faltam menos de 2h para o atendimento.");
+      return;
+    }
+
+    if (window.confirm("Deseja cancelar este agendamento?")) {
+      const todos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+      const filtrados = todos.filter(a => a.id !== id);
+      localStorage.setItem('agendamentos', JSON.stringify(filtrados));
+      atualizarListaAgendamentos();
+    }
+  };
+
+  if (agendadoComSucesso) {
+    return (
+      <div className="sucesso-wrapper">
+        <div className="card-sucesso">
+          <h2>✅ Agendamento Confirmado!</h2>
+          <p>O seu horário foi guardado. Pode consultá-lo na sua lista de agendamentos.</p>
+          <button onClick={() => setAgendadoComSucesso(false)} className="btn-novo">Ver Meus Horários</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="agenda-wrapper">
-      <nav className="agenda-nav">
-        <span>Bem-vinda, <strong>{usuarioLogado?.nome}</strong></span>
-        <button onClick={() => { localStorage.removeItem('usuarioLogado'); navigate('/'); }} className="btn-logout">Sair</button>
+    <div className="cliente-wrapper">
+      <nav className="cliente-nav">
+        <div className="nav-content">
+          <span>Olá, <strong>{usuarioLogado?.nome}</strong></span>
+          <button onClick={() => { localStorage.removeItem('usuarioLogado'); navigate('/'); }} className="btn-sair">Sair</button>
+        </div>
       </nav>
 
-      <div className="agenda-main">
-        <div className="agenda-container">
-          <h2>Agende seu Horário</h2>
-          <form onSubmit={handleAgendar}>
-            <div className="input-group-agenda">
-              <label>Serviço:</label>
-              <select value={agendamento.servico} onChange={(e) => setAgendamento({...agendamento, servico: e.target.value})} required>
-                <option value="">Escolha um serviço...</option>
-                {servicos.map(s => <option key={s.id} value={s.nome}>{s.nome} - R$ {s.preco}</option>)}
-              </select>
-            </div>
-            <div className="input-group-agenda">
-              <label>Data:</label>
-              <input type="date" value={agendamento.data} onChange={(e) => setAgendamento({...agendamento, data: e.target.value})} required />
-            </div>
-            <div className="input-group-agenda">
-              <label>Hora:</label>
-              <input type="time" value={agendamento.hora} onChange={(e) => setAgendamento({...agendamento, hora: e.target.value})} required />
-            </div>
-            <button type="submit" className="btn-agendar">Confirmar Agendamento</button>
-          </form>
-        </div>
+      <div className="cliente-container">
+        <div className="card-agenda-cliente">
+          <h2>Novo Agendamento</h2>
+          
+          <form onSubmit={finalizarAgendamento}>
+            <select value={agendamento.servico} onChange={e => setAgendamento({...agendamento, servico: e.target.value})} className="select-servico">
+              <option value="">Escolha o serviço...</option>
+              {servicos.map(s => <option key={s.id} value={s.nome}>{s.nome} - R$ {s.preco}</option>)}
+            </select>
 
-        <div className="meus-horarios">
-          <h3>Meus Horários Marcados</h3>
-          <div className="lista-cards">
+            <div className="seletor-mes-cliente">
+              <button type="button" onClick={() => setMesAtivo(dataRef.getMonth())}>&lt;</button>
+              <span className="mes-nome">{new Date(anoAtivo, mesAtivo).toLocaleString('pt-BR', { month: 'long' })}</span>
+              <button type="button" onClick={() => setMesAtivo(dataRef.getMonth() + 1)}>&gt;</button>
+            </div>
+
+            <div className="calendario-cliente-grid">
+              {diasVisiveis.map(dia => (
+                <div 
+                  key={dia.dataISO} 
+                  className={`dia-bolinha ${!dia.disponivel ? 'off' : agendamento.data === dia.dataISO ? 'selected' : 'on'}`} 
+                  onClick={() => dia.disponivel && setAgendamento({...agendamento, data: dia.dataISO})}
+                >
+                  {dia.numero}
+                </div>
+              ))}
+            </div>
+
+            {agendamento.data && (
+              <div className="expander-horas-cliente">
+                <button type="button" className="btn-toggle-horas-cliente" onClick={() => setMostrarHoras(!mostrarHoras)}>
+                  {mostrarHoras ? "Ocultar Horários ▲" : "Escolher Horário ▼"}
+                </button>
+                {mostrarHoras && (
+                  <div className="grid-horas-cliente">
+                    {gerarHorasDinamicas().map(h => (
+                      <div key={h} className={`hora-item ${agendamento.hora === h ? 'active' : ''}`} onClick={() => setAgendamento({...agendamento, hora: h})}>
+                        {h}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="alerta-obs">
+               <strong>Nota:</strong> O horário pode variar ligeiramente conforme o procedimento anterior.
+            </div>
+
+            <button type="submit" className="btn-confirmar-final">Confirmar Agora</button>
+          </form>
+
+          {/* SEÇÃO SEMPRE VISÍVEL PARA O CLIENTE NÃO ESQUECER */}
+          <div className="meus-agendamentos-fixo">
+            <h3>🗓️ Meus Horários Marcados</h3>
             {meusAgendamentos.length === 0 ? (
-              <p>Nenhum horário marcado.</p>
+              <p className="txt-vazio">Ainda não tem agendamentos para mostrar.</p>
             ) : (
-              meusAgendamentos.map(ag => (
-                <div key={ag.id} className="card-agendamento">
-                  <strong>{ag.servico}</strong>
-                  <p>📅 {ag.data} ⏰ {ag.hora}</p>
+              meusAgendamentos.map(m => (
+                <div key={m.id} className="card-meu-horario">
+                  <div className="info">
+                    <span className="servico-nome">{m.servico}</span>
+                    <span className="data-hora">{m.data.split('-').reverse().join('/')} às {m.hora}</span>
+                  </div>
+                  <button onClick={() => cancelarHorario(m.id, m.data, m.hora)} className="btn-cancelar">
+                    Cancelar
+                  </button>
                 </div>
               ))
             )}

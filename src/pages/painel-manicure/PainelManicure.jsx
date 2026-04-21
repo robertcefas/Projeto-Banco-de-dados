@@ -7,55 +7,53 @@ function PainelManicure() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [editandoServico, setEditandoServico] = useState(null);
-  
-  // Estado para o Modal de informações do cliente
   const [clienteInfo, setClienteInfo] = useState(null);
+  const [mostrarHoras, setMostrarHoras] = useState(false);
+
+  const [configAgenda, setConfigAgenda] = useState({
+    datasBloqueadas: [], 
+    horaInicio: "09:00",
+    horaFim: "18:00"
+  });
+
+  const dataHoje = new Date();
+  const [mesAtivo, setMesAtivo] = useState(dataHoje.getMonth());
+  const [anoAtivo, setAnoAtivo] = useState(dataHoje.getFullYear());
+  const [diasDoMes, setDiasDoMes] = useState([]);
 
   useEffect(() => {
-    // Carrega Agendamentos
+    // Carrega tudo do LocalStorage ao iniciar
     const dadosAg = JSON.parse(localStorage.getItem('agendamentos') || '[]');
     setAgendamentos(dadosAg);
-
-    // Carrega Serviços
+    
     const servicosSalvos = JSON.parse(localStorage.getItem('servicos') || '[]');
     setServicos(servicosSalvos);
+    
+    const agendaSalva = JSON.parse(localStorage.getItem('configAgenda'));
+    if (agendaSalva) setConfigAgenda(agendaSalva);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
-    navigate('/');
-  };
-
-  // Função para buscar dados do cadastro do cliente
-  const verDetalhesCliente = (email) => {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    const dadosCompletos = usuarios.find(u => u.email === email);
-    
-    if (dadosCompletos) {
-      setClienteInfo(dadosCompletos);
-    } else {
-      alert("Dados de cadastro não encontrados para este e-mail.");
+  useEffect(() => {
+    const ultimoDia = new Date(anoAtivo, mesAtivo + 1, 0).getDate();
+    const dias = [];
+    for (let i = 1; i <= ultimoDia; i++) {
+      const dataFormatada = `${anoAtivo}-${String(mesAtivo + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      dias.push({ data: dataFormatada, numero: i });
     }
-  };
+    setDiasDoMes(dias);
+  }, [mesAtivo, anoAtivo]);
 
-  const removerAgendamento = (id) => {
-    const novos = agendamentos.filter(a => a.id !== id);
-    localStorage.setItem('agendamentos', JSON.stringify(novos));
-    setAgendamentos(novos);
-    alert("Atendimento concluído!");
-  };
-
+  // --- FUNÇÕES DE SERVIÇOS (RESTAURADAS) ---
   const salvarServico = (e) => {
     e.preventDefault();
-    let novosServicos;
+    let novos;
     if (editandoServico.id) {
-      novosServicos = servicos.map(s => s.id === editandoServico.id ? editandoServico : s);
+      novos = servicos.map(s => s.id === editandoServico.id ? editandoServico : s);
     } else {
-      const novo = { ...editandoServico, id: Date.now() };
-      novosServicos = [...servicos, novo];
+      novos = [...servicos, { ...editandoServico, id: Date.now() }];
     }
-    setServicos(novosServicos);
-    localStorage.setItem('servicos', JSON.stringify(novosServicos));
+    setServicos(novos);
+    localStorage.setItem('servicos', JSON.stringify(novos));
     setEditandoServico(null);
   };
 
@@ -65,114 +63,152 @@ function PainelManicure() {
     localStorage.setItem('servicos', JSON.stringify(novos));
   };
 
+  // --- OUTRAS FUNÇÕES ---
+  const verDadosCliente = (email) => {
+    const todos = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const achei = todos.find(u => u.email === email);
+    if (achei) setClienteInfo(achei);
+  };
+
+  const concluirAgendamento = (id) => {
+    const novos = agendamentos.filter(ag => ag.id !== id);
+    setAgendamentos(novos);
+    localStorage.setItem('agendamentos', JSON.stringify(novos));
+  };
+
+  const alternarData = (data) => {
+    const hojeComp = new Date().setHours(0,0,0,0);
+    if (new Date(data + "T00:00:00") < hojeComp) return;
+    let novas = configAgenda.datasBloqueadas.includes(data) 
+      ? configAgenda.datasBloqueadas.filter(d => d !== data) 
+      : [...configAgenda.datasBloqueadas, data];
+    setConfigAgenda({ ...configAgenda, datasBloqueadas: novas });
+  };
+
   return (
     <div className="painel-wrapper">
       <nav className="painel-nav">
         <div className="nav-content">
-          <span>Painel Administrativo - <strong>Nails for You</strong></span>
-          <button onClick={handleLogout} className="btn-logout">Sair</button>
+          <span>Nails for You <strong>Admin</strong></span>
+          <button onClick={() => navigate('/')} className="btn-logout">Sair</button>
         </div>
       </nav>
 
       <div className="painel-grid">
-        {/* COLUNA ESQUERDA: AGENDAMENTOS */}
-        <section className="secao-admin">
-          <h2>Próximos Agendamentos</h2>
-          <div className="tabela-container">
-            {agendamentos.length === 0 ? (
-              <p className="sem-dados">Nenhum agendamento pendente.</p>
-            ) : (
+        <div className="coluna-esquerda">
+          {/* TABELA DE AGENDAMENTOS */}
+          <section className="card-admin">
+            <h2 className="titulo-secao">Próximos Agendamentos</h2>
+            <div className="tabela-container">
               <table>
                 <thead>
                   <tr>
-                    <th>Cliente (Ver Info)</th>
-                    <th>Serviço</th>
-                    <th>Data/Hora</th>
-                    <th>Ação</th>
+                    <th>CLIENTE</th>
+                    <th>SERVIÇO</th>
+                    <th>DATA/HORA</th>
+                    <th>AÇÃO</th>
                   </tr>
                 </thead>
                 <tbody>
                   {agendamentos.map(ag => (
                     <tr key={ag.id}>
-                      <td>
-                        <button className="btn-link-cliente" onClick={() => verDetalhesCliente(ag.clienteEmail)}>
-                          {ag.clienteNome}
-                        </button>
-                      </td>
+                      <td><button className="link-nome" onClick={() => verDadosCliente(ag.clienteEmail)}>{ag.clienteNome}</button></td>
                       <td>{ag.servico}</td>
                       <td>{ag.data} às {ag.hora}</td>
-                      <td>
-                        <button className="btn-remover" onClick={() => removerAgendamento(ag.id)}>Concluir</button>
-                      </td>
+                      <td><button className="btn-concluir" onClick={() => concluirAgendamento(ag.id)}>Concluir</button></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
 
-        {/* COLUNA DIREITA: SERVIÇOS E PREÇOS */}
-        <section className="secao-admin">
-          <h2>Serviços e Preços</h2>
-          <button className="btn-novo" onClick={() => setEditandoServico({ nome: '', preco: '' })}>
-            + Novo Serviço
-          </button>
-          
-          {editandoServico && (
-            <form className="form-servico" onSubmit={salvarServico}>
-              <input 
-                type="text" placeholder="Nome do Serviço" required
-                value={editandoServico.nome}
-                onChange={e => setEditandoServico({...editandoServico, nome: e.target.value})}
-              />
-              <input 
-                type="number" placeholder="Preço" required
-                value={editandoServico.preco}
-                onChange={e => setEditandoServico({...editandoServico, preco: e.target.value})}
-              />
-              <div className="form-btns">
-                <button type="submit" className="btn-save">Salvar</button>
-                <button type="button" className="btn-cancel" onClick={() => setEditandoServico(null)}>Cancelar</button>
-              </div>
-            </form>
-          )}
+          {/* GESTÃO DE SERVIÇOS (PRODUTOS) */}
+          <section className="card-admin mt-20">
+            <div className="header-servicos">
+              <h2 className="titulo-secao">Serviços e Produtos</h2>
+              <button className="btn-add-servico" onClick={() => setEditandoServico({nome: '', preco: ''})}>+ Novo</button>
+            </div>
 
-          <ul className="lista-servicos">
-            {servicos.map(s => (
-              <li key={s.id}>
-                <span>{s.nome} - R$ {s.preco}</span>
-                <div className="acoes-servico">
-                  <button className="btn-edit" onClick={() => setEditandoServico(s)}>Editar</button>
-                  <button className="btn-del" onClick={() => excluirServico(s.id)}>Excluir</button>
+            {editandoServico && (
+              <form className="form-servico" onSubmit={salvarServico}>
+                <input type="text" placeholder="Nome do serviço" value={editandoServico.nome} onChange={e => setEditandoServico({...editandoServico, nome: e.target.value})} required />
+                <input type="text" placeholder="Preço (ex: 35.00)" value={editandoServico.preco} onChange={e => setEditandoServico({...editandoServico, preco: e.target.value})} required />
+                <div className="form-btns">
+                   <button type="submit" className="btn-save-s">Gravar</button>
+                   <button type="button" className="btn-cancel-s" onClick={() => setEditandoServico(null)}>Cancelar</button>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+              </form>
+            )}
+
+            <ul className="lista-produtos">
+              {servicos.map(s => (
+                <li key={s.id}>
+                  <span>{s.nome} - <strong>R$ {s.preco}</strong></span>
+                  <div className="acoes">
+                    <button onClick={() => setEditandoServico(s)}>Editar</button>
+                    <button onClick={() => excluirServico(s.id)} className="txt-red">Excluir</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        <aside className="coluna-direita">
+          {/* CALENDÁRIO */}
+          <section className="card-admin">
+            <div className="agenda-nav">
+              <button onClick={() => setMesAtivo(mesAtivo - 1)}>&lt;</button>
+              <h3>{new Date(anoAtivo, mesAtivo).toLocaleString('pt-BR', { month: 'long' })}</h3>
+              <button onClick={() => setMesAtivo(mesAtivo + 1)}>&gt;</button>
+            </div>
+            
+            <div className="calendario-grid">
+              {diasDoMes.map(item => {
+                const isOff = configAgenda.datasBloqueadas.includes(item.data) || new Date(item.data + "T00:00:00") < new Date().setHours(0,0,0,0);
+                return (
+                  <div key={item.data} className={`dia-box ${isOff ? 'off' : 'on'}`} onClick={() => alternarData(item.data)}>
+                    {item.numero}
+                  </div>
+                );
+              })}
+            </div>
+
+            <button className="btn-collapse" onClick={() => setMostrarHoras(!mostrarHoras)}>
+              Configurar Horários {mostrarHoras ? '▲' : '▼'}
+            </button>
+            
+            {mostrarHoras && (
+              <div className="horas-config">
+                <input type="time" value={configAgenda.horaInicio} onChange={e => setConfigAgenda({...configAgenda, horaInicio: e.target.value})} />
+                <span>às</span>
+                <input type="time" value={configAgenda.horaFim} onChange={e => setConfigAgenda({...configAgenda, horaFim: e.target.value})} />
+              </div>
+            )}
+            
+            <button className="btn-principal" onClick={() => {
+              localStorage.setItem('configAgenda', JSON.stringify(configAgenda));
+              alert("Configurações salvas!");
+            }}>Salvar Disponibilidade</button>
+          </section>
+        </aside>
       </div>
 
-      {/* MODAL DE INFORMAÇÕES DO CLIENTE */}
+      {/* MODAL CLIENTE */}
       {clienteInfo && (
-        <div className="modal-overlay" onClick={() => setClienteInfo(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>Detalhes do Cliente</h3>
-            <hr />
-            <div className="info-item">
-              <label>Nome Completo:</label>
-              <p>{clienteInfo.nome}</p>
+        <div className="modal-bg" onClick={() => setClienteInfo(null)}>
+          <div className="modal-perfil" onClick={e => e.stopPropagation()}>
+            <div className="perfil-topo">
+              <div className="perfil-avatar">{clienteInfo.nome.charAt(0)}</div>
+              <h3>Dados da Cliente</h3>
             </div>
-            <div className="info-item">
-              <label>E-mail de Contato:</label>
-              <p>{clienteInfo.email}</p>
+            <div className="perfil-dados">
+              <p><strong>Nome:</strong> {clienteInfo.nome}</p>
+              <p><strong>E-mail:</strong> {clienteInfo.email}</p>
+              <p><strong>Telefone:</strong> {clienteInfo.telefone || "Não informado"}</p>
             </div>
-            {clienteInfo.telefone && (
-              <div className="info-item">
-                <label>Telefone/WhatsApp:</label>
-                <p>{clienteInfo.telefone}</p>
-              </div>
-            )}
-            <button className="btn-fechar-modal" onClick={() => setClienteInfo(null)}>Fechar</button>
+            <button className="btn-close" onClick={() => setClienteInfo(null)}>Fechar</button>
           </div>
         </div>
       )}
