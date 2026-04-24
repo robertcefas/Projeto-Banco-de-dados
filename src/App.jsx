@@ -1,14 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Importação dos Estilos
-import "./App.css"; 
-
-// Importação das Páginas (Apenas uma de cada!)
+import PainelManicure from './pages/painel-manicure/PainelManicure';
+// 1. Importações dos componentes REAIS que você criou
 import Login from './pages/login/Login';
 import Cadastro from './pages/cadastro/Cadastro';
 import AgendaCliente from './pages/agenda-cliente/AgendaCliente';
-import PainelManicure from './pages/painel-manicure/PainelManicure';
+
 
 function App() {
   return (
