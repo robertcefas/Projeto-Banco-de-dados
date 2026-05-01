@@ -1,65 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import "./Login.css";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../firebase"; 
+import './Login.css'; // Importando o seu CSS maravilhoso!
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
 
-  const realizarLogin = (e) => {
-    e.preventDefault();
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    const encontrou = usuarios.find(u => u.email === email && u.senha === senha);
-
-    if (encontrou) {
-      localStorage.setItem('usuarioLogado', JSON.stringify(encontrou));
-      if (encontrou.tipo === 'manicure') {
-        navigate('/painel-manicure');
-      } else {
-        navigate('/agenda-cliente');
-      }
-    } else {
-      alert("E-mail ou senha incorretos!");
+  const handleGoogleLogin = async () => {
+    try {
+      const resultado = await signInWithPopup(auth, provider);
+      const usuario = resultado.user;
+      
+      console.log("Login feito com sucesso! Bem-vinda:", usuario.displayName);
+      navigate('/agenda-cliente');
+      
+    } catch (erro) {
+      console.error("Erro ao fazer login com o Google:", erro);
+      alert("Houve um erro ao tentar fazer o login pelo Google.");
     }
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-container">
-        <h1>Nails for You</h1>
         
-        <form onSubmit={realizarLogin}>
-          <div className="login-input-group">
-            <label>E-mail</label>
-            <input 
-              type="email" 
-              placeholder="Digite seu e-mail" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} 
-              required
-            />
-          </div>
+        <h1>Login</h1>
+        
+        <div className="login-input-group">
+          <label>E-mail</label>
+          <input type="email" placeholder="Digite seu e-mail" />
+        </div>
 
-          <div className="login-input-group">
-            <label>Senha</label>
-            <input 
-              type="password" 
-              placeholder="Digite sua senha" 
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)} 
-              required
-            />
-          </div>
+        <div className="login-input-group">
+          <label>Senha</label>
+          <input type="password" placeholder="Digite sua senha" />
+        </div>
+        
+        <button className="btn-login">Entrar</button>
 
-          <button type="submit" className="btn-login">
-            Entrar
-          </button>
+        {/* NOVO: Botão do Google com a nova classe CSS */}
+        <button type="button" className="btn-google" onClick={handleGoogleLogin}>
+          <img 
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+            alt="Logo do Google" 
+          />
+          Entrar com o Google
+        </button>
 
-          <div className="signup-link">
-            <p>Não tem conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cadastro'); }}>Cadastre-se aqui</a></p>
-          </div>
-        </form>
+        <div className="signup-link">
+          Não tem conta? <a href="/cadastro">Cadastre-se aqui</a>
+        </div>
+        
       </div>
     </div>
   );
