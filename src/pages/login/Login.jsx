@@ -2,25 +2,28 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../firebase"; 
-import './Login.css'; // Importando o seu CSS maravilhoso!
+import './Login.css'; 
 
 function Login() {
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
+const handleGoogleLogin = async () => {
     try {
       const resultado = await signInWithPopup(auth, provider);
       const usuario = resultado.user;
+      localStorage.setItem('usuarioLogado', JSON.stringify({
+        nome: usuario.displayName,
+        email: usuario.email
+      }));
       
       console.log("Login feito com sucesso! Bem-vinda:", usuario.displayName);
-      navigate('/agenda-cliente');
+      navigate('/agenda-cliente'); 
       
     } catch (erro) {
       console.error("Erro ao fazer login com o Google:", erro);
       alert("Houve um erro ao tentar fazer o login pelo Google.");
     }
   };
-
   return (
     <div className="login-wrapper">
       <div className="login-container">
