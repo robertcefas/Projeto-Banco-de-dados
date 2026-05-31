@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; // <-- IMPORTANTE: useState adicionado aqui
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../firebase"; 
 import './Login.css'; 
@@ -88,7 +88,7 @@ function Login() {
         </button>
 
         <div className="signup-link">
-          Não tem conta? <a href="/cadastro">Cadastre-se aqui</a>
+          Não tem conta? <Link to="/cadastro">Cadastre-se aqui</Link>
         </div>
         
       </div>

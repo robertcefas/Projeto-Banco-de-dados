@@ -166,7 +166,14 @@ function AgendaCliente() {
               </div>
             )}
 
-            <button type="submit" className="btn-confirmar-final">Confirmar</button>
+            {/* O BOTÃO FOI ARRUMADO E COLOCADO AQUI, DENTRO DO FORMULÁRIO */}
+            <button 
+              type="submit" 
+              className="btn-confirmar-final"
+              disabled={!agendamento.servico || !agendamento.data || !agendamento.hora}
+            >
+              Confirmar
+            </button>
           </form>
 
           <div className="meus-agendamentos-fixo">
@@ -187,5 +194,4 @@ function AgendaCliente() {
   );
 }
 
-// ESTA LINHA É O QUE ESTÁ FALTANDO NO SEU CÓDIGO
 export default AgendaCliente;

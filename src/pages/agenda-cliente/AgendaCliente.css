@@ -1,110 +1,20 @@
-.cliente-wrapper { min-height: 100vh; background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-.cliente-nav { background: #fff; padding: 15px 20px; border-bottom: 1px solid #eee; }
-.nav-content { display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; }
-.btn-sair { background: #f1f2f6; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-.cliente-container { display: flex; justify-content: center; padding: 30px 15px; }
-.card-agenda-cliente { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 420px; }
-
-.select-servico { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
-.label-top { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #636e72; }
-
-/* Calendário */
-.seletor-mes-cliente { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.mes-nome { font-weight: bold; text-transform: capitalize; }
-.seletor-mes-cliente button { background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
-
-.calendario-cliente-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 20px; }
-.dia-bolinha { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
-.dia-bolinha.on { background: #f1f2f6; }
-.dia-bolinha.off { background: #ffebee; color: #c62828; cursor: not-allowed; opacity: 0.5; }
-.dia-bolinha.selected { background: #3498db; color: white; }
-
-/* Horas */
-.expander-horas-cliente { margin-bottom: 20px; border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
-.btn-toggle-horas-cliente { width: 100%; padding: 12px; background: #fff; border: none; cursor: pointer; font-weight: bold; color: #3498db; }
-.grid-horas-cliente { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px; background: #fafafa; border-top: 1px solid #eee; }
-.hora-item { padding: 8px; text-align: center; background: #fff; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
-.hora-item.active { background: #2ecc71; color: white; border-color: #2ecc71; }
-
-/* Obs e Botão */
-.alerta-obs { font-size: 0.75rem; color: #856404; background: #fff3cd; padding: 10px; border-radius: 8px; margin-bottom: 20px; line-height: 1.4; border-left: 4px solid #ffeeba; }
-.btn-confirmar-final { width: 100%; padding: 15px; background: #2d3436; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-
-/* Meus Horários */
-.meus-agendamentos-secao { margin-top: 30px; border-top: 2px solid #f1f2f6; padding-top: 20px; }
-.mini-card-agendamento { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.85rem; }
-.btn-cancelar { background: #ff7675; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
-
-/* Sucesso */
-.sucesso-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8f9fa; }
-.card-sucesso { background: white; padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 350px; }
-.check-icon { width: 60px; height: 60px; background: #2ecc71; color: white; font-size: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-.sucesso-botoes { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; }
-.btn-novo { background: #2d3436; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-.btn-sair-sucesso { background: #eee; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
-/* Adicione ou substitua estas classes no seu CSS atual */
-
-.lista-cancelamento-cliente {
-  margin-top: 30px;
-  border-top: 2px solid #f1f2f6;
-  padding-top: 20px;
+/* =========================================
+   VARIÁVEIS DE COR (Fácil de mudar depois)
+========================================= */
+:root {
+  --cor-primaria: #9b59b6; /* Roxo/Lilás da sua marca */
+  --cor-primaria-hover: #8e44ad;
+  --cor-texto: #1c1e21;
+  --cor-fundo: #f0f2f5;
+  --cor-erro: #fa3e3e;
+  --cor-desativado: #cbd5e1;
 }
 
-.lista-cancelamento-cliente h3 {
-  font-size: 1rem;
-  margin-bottom: 15px;
-  color: #2d3436;
-}
-
-.card-cancelar-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-}
-
-.info-ag {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.info-ag strong { font-size: 0.9rem; color: #2d3436; }
-.info-ag span { font-size: 0.8rem; color: #636e72; }
-
-.btn-cancel-acao {
-  background: #ffebee;
-  color: #c62828;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn-cancel-acao:hover {
-  background: #c62828;
-  color: white;
-}
-
-.txt-vazio {
-  font-size: 0.8rem;
-  color: #b2bec3;
-  text-align: center;
-}
 /* Estrutura Principal */
 .cliente-wrapper {
   min-height: 100vh;
-  background: #f0f2f5;
-  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--cor-fundo);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 .cliente-nav {
@@ -131,8 +41,9 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s;
 }
+.btn-sair:hover { background: #e2e8f0; }
 
 /* Container do Card */
 .cliente-container {
@@ -153,7 +64,7 @@
 .card-agenda-cliente h2 {
   font-size: 1.3rem;
   margin-bottom: 20px;
-  color: #1c1e21;
+  color: var(--cor-texto);
 }
 
 /* Formulário de Agendamento */
@@ -164,6 +75,11 @@
   border-radius: 10px;
   margin-bottom: 20px;
   font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.select-servico:focus {
+  border-color: var(--cor-primaria);
 }
 
 /* Calendário */
@@ -179,6 +95,17 @@
   text-transform: capitalize;
   color: #4b4f56;
 }
+
+.seletor-mes-cliente button {
+  background: #eee;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.seletor-mes-cliente button:hover { background: #ddd; }
 
 .calendario-cliente-grid {
   display: grid;
@@ -196,14 +123,22 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
 
-.dia-bolinha.on { background: #f0f2f5; color: #1c1e21; }
-.dia-bolinha.off { background: #ffebee; color: #fa3e3e; cursor: not-allowed; opacity: 0.4; }
-.dia-bolinha.selected { background: #1877f2; color: white; transform: scale(1.1); }
+.dia-bolinha.on { background: var(--cor-fundo); color: var(--cor-texto); }
+.dia-bolinha.on:hover { background: #e2e8f0; }
+.dia-bolinha.off { background: #ffebee; color: var(--cor-erro); cursor: not-allowed; opacity: 0.4; }
 
-/* Horários */
+/* NOVA COR: Dia Selecionado */
+.dia-bolinha.selected { 
+  background: var(--cor-primaria); 
+  color: white; 
+  transform: scale(1.1); 
+  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+}
+
+/* Horários e Animação */
 .expander-horas-cliente {
   border: 1px solid #ebedf0;
   border-radius: 12px;
@@ -217,8 +152,14 @@
   background: #fff;
   border: none;
   font-weight: 700;
-  color: #1877f2;
+  color: var(--cor-primaria);
   cursor: pointer;
+}
+
+/* Animação de Fade-in para os horários */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .grid-horas-cliente {
@@ -227,6 +168,7 @@
   gap: 10px;
   padding: 15px;
   background: #f7f8fa;
+  animation: fadeInDown 0.3s ease forwards; /* Aplica a animação aqui */
 }
 
 .hora-item {
@@ -237,48 +179,53 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.85rem;
+  transition: all 0.2s;
 }
+.hora-item:hover { border-color: var(--cor-primaria); }
 
+/* NOVA COR: Hora Selecionada */
 .hora-item.active {
-  background: #2ecc71;
+  background: var(--cor-primaria);
   color: white;
-  border-color: #2ecc71;
+  border-color: var(--cor-primaria);
+  font-weight: bold;
 }
 
-/* Observação */
-.alerta-obs {
-  font-size: 0.75rem;
-  background: #fff9db;
-  color: #856404;
-  padding: 12px;
-  border-radius: 8px;
-  border-left: 4px solid #f1c40f;
-  margin-bottom: 20px;
-  line-height: 1.4;
-}
-
+/* Botão Confirmar Inteligente */
 .btn-confirmar-final {
   width: 100%;
   padding: 16px;
-  background: #1c1e21;
+  background: var(--cor-primaria);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-confirmar-final:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+  transform: translateY(-2px);
 }
 
-/* SEÇÃO "MEUS AGENDAMENTOS" (Para não esquecer) */
+/* ESTADO DESATIVADO DO BOTÃO */
+.btn-confirmar-final:disabled {
+  background: var(--cor-desativado);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Meus Horários */
 .meus-agendamentos-fixo {
   margin-top: 32px;
-  border-top: 2px solid #f0f2f5;
+  border-top: 2px solid var(--cor-fundo);
   padding-top: 20px;
 }
 
 .meus-agendamentos-fixo h3 {
   font-size: 1rem;
-  color: #1c1e21;
+  color: var(--cor-texto);
   margin-bottom: 15px;
 }
 
@@ -294,44 +241,22 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-}
-
-.servico-nome {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #1c1e21;
-}
-
-.data-hora {
-  font-size: 0.85rem;
-  color: #65676b;
-}
+.info { display: flex; flex-direction: column; }
+.info strong { font-weight: 700; font-size: 0.95rem; color: var(--cor-texto); }
+.info span { font-size: 0.85rem; color: #65676b; margin-top: 4px; }
 
 .btn-cancelar {
   background: #fce9e9;
-  color: #fa3e3e;
+  color: var(--cor-erro);
   border: none;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
+  transition: 0.2s;
 }
-
-.btn-cancelar:hover {
-  background: #fa3e3e;
-  color: white;
-}
-
-.txt-vazio {
-  text-align: center;
-  font-size: 0.85rem;
-  color: #8d949e;
-  padding: 10px;
-}
+.btn-cancelar:hover { background: var(--cor-erro); color: white; }
 
 /* Tela de Sucesso */
 .sucesso-wrapper {
@@ -339,7 +264,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f5;
+  background: var(--cor-fundo);
   padding: 20px;
 }
 
@@ -353,7 +278,7 @@
 }
 
 .btn-novo {
-  background: #1877f2;
+  background: var(--cor-primaria);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -361,4 +286,6 @@
   font-weight: 600;
   margin-top: 20px;
   cursor: pointer;
+  transition: 0.2s;
 }
+.btn-novo:hover { background: var(--cor-primaria-hover); }
