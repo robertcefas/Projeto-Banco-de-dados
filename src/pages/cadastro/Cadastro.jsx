@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth } from "../../firebase"; // Verifique se o caminho está correto para o seu projeto
 import "./Cadastro.css";
 
 function Cadastro() {
   const navigate = useNavigate();
+  const [carregando, setCarregando] = useState(false); // Novo estado para o botão
 
   const [formData, setFormData] = useState({
     firstname: '',
@@ -41,37 +42,69 @@ function Cadastro() {
       return;
     }
 
+    setCarregando(true); // Trava o botão enquanto carrega
+
     try {
+      // 1. Cria a conta no Firebase (Segurança)
       const credencial = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
 
-      console.log("Usuário criado:", credencial.user);
+      const usuario = credencial.user;
+      console.log("Usuário criado no Firebase:", usuario);
 
+      // 2. Envia os dados para a API do Postgres (Vercel)
+      const resposta = await fetch('/api/cadastro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firebaseUid: usuario.uid,
+          nome: `${formData.firstname} ${formData.lastname}`, // Junta os dois nomes
+          email: formData.email,
+          telefone: formData.phone
+        }),
+      });
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        // Se a API deu erro, lança para o catch
+        throw new Error(dados.erro || 'Erro ao salvar no banco de dados.');
+      }
+
+      console.log("Usuário salvo no banco Postgres:", dados);
+      
       alert("Cadastro realizado com sucesso!");
-      navigate("/");
+      navigate("/"); // Manda para a tela de login
 
     } catch (erro) {
       console.error("Erro ao cadastrar:", erro);
 
-      switch (erro.code) {
-        case "auth/email-already-in-use":
-          alert("Este e-mail já está cadastrado!");
-          break;
-
-        case "auth/invalid-email":
-          alert("E-mail inválido!");
-          break;
-
-        case "auth/weak-password":
-          alert("A senha deve ter pelo menos 6 caracteres.");
-          break;
-
-        default:
-          alert("Erro ao realizar cadastro.");
+      // Verifica se é erro do Firebase ou da nossa API
+      if (erro.code) {
+        switch (erro.code) {
+          case "auth/email-already-in-use":
+            alert("Este e-mail já está cadastrado!");
+            break;
+          case "auth/invalid-email":
+            alert("E-mail inválido!");
+            break;
+          case "auth/weak-password":
+            alert("A senha deve ter pelo menos 6 caracteres.");
+            break;
+          default:
+            alert("Erro ao realizar cadastro no Firebase.");
+        }
+      } else {
+        // Exibe erro do banco de dados, se houver
+        alert(erro.message || "Erro ao realizar cadastro.");
       }
+    } finally {
+      setCarregando(false); // Libera o botão
     }
   };
 
@@ -193,8 +226,8 @@ function Cadastro() {
             </div>
           </div>
 
-          <button type="submit" className="btn-cadastro">
-            Cadastrar
+          <button type="submit" className="btn-cadastro" disabled={carregando}>
+            {carregando ? "Cadastrando..." : "Cadastrar"}
           </button>
 
           <div className="login-link">
