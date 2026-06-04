@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; // <-- IMPORTANTE: useState adicionado aqui
 import { useNavigate, Link } from 'react-router-dom';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, provider } from "../../firebase"; 
 import './Login.css'; 
 
@@ -12,21 +12,36 @@ function Login() {
   const [senha, setSenha] = useState('');
 
   // Função para o botão "Entrar" normal (Admin)
-  const handleLoginNormal = () => {
-    // Verifica se o e-mail digitado é o da administração
-    if (email === 'admin@estudio.com') {
-      // Salva os dados no cofre para não ser expulso da página
+  const handleLoginNormal = async (e) => {
+    e.preventDefault(); // Evita recarregar a página se estiver num form
+    
+    try {
+      // 1. Tenta fazer o login no Firebase com o e-mail e senha digitados
+      const credencial = await signInWithEmailAndPassword(auth, email, senha);
+      const usuario = credencial.user;
+
+      // 2. Salva o usuário no cofre para a Agenda não expulsá-lo
       localStorage.setItem('usuarioLogado', JSON.stringify({
-        nome: 'Administrador',
-        email: email
+        nome: usuario.displayName || 'Cliente', // Pega o nome ou deixa como Cliente
+        email: usuario.email
       }));
       
-      console.log("Login Admin feito com sucesso!");
-      navigate('/painel-manicure'); // Manda para o painel da manicure
+      // 3. Verifica para qual tela ele deve ir
+      if (email === 'admin@estudio.com') {
+        console.log("Login Admin feito com sucesso!");
+        navigate('/painel-manicure'); 
+      } else {
+        console.log("Login Cliente feito com sucesso!");
+        navigate('/agenda-cliente'); // Ajuste a rota se for '/agendacliente'
+      }
       
-    } else {
-      // Se tentar entrar com e-mail comum pelo botão Entrar
-      alert("Acesso restrito. Se você é cliente, use o botão 'Entrar com o Google'.");
+    } catch (erro) {
+      console.error("Erro no login normal:", erro);
+      if (erro.code === 'auth/invalid-credential' || erro.code === 'auth/wrong-password') {
+        alert("E-mail ou senha incorretos!");
+      } else {
+        alert("Ocorreu um erro ao tentar entrar. Você já se cadastrou?");
+      }
     }
   };
 
