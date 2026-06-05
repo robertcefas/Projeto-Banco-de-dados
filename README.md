@@ -54,6 +54,27 @@ A aplicação possui:
 - O Prisma usa `prisma/schema.prisma` e o client é gerado em `node_modules/@prisma/client`.
 - Use `.env` para configurar a conexão com o banco de dados.
 
+### Seed do Admin
+
+O projeto inclui um seed para criar (ou atualizar) um usuário com `perfil: "admin"` no model `Usuario`.
+
+- Arquivo: `prisma/seed.js`
+- Variáveis de ambiente usadas pelo seed:
+  - `ADMIN_EMAIL` (e-mail do admin)
+  - `ADMIN_PASSWORD` (senha que será hasheada e salva no campo `senha`)
+  - `ADMIN_NOME` (opcional)
+  - `ADMIN_FIREBASE_UID` (UID do usuário no Firebase — importante para o login via Firebase)
+
+Para rodar o seed localmente:
+
+```bash
+npx prisma generate
+npx prisma db push     # ou `npx prisma migrate dev --name add-senha` para migrar
+npx prisma db seed
+```
+
+No Vercel, adicione as mesmas variáveis de ambiente do projeto (Project Settings → Environment Variables). O `package.json` foi configurado para executar `prisma db seed` durante o `build`, então o admin será criado automaticamente ao fazer deploy.
+
 ## Como rodar localmente
 
 1. Instale as dependências:
@@ -135,3 +156,8 @@ Você pode modificar esses valores diretamente no array `listaInicial`.
 - O proxy de API do Vite redireciona chamadas `/api/...` para o servidor local de backend.
 - Para atualizar o schema do Prisma, use `npx prisma generate` sempre que fizer mudanças em `prisma/schema.prisma`.
 - Se quiser adicionar outras redes sociais, crie novas variáveis de link na página de agenda ou adicione componentes similares.
+
+### Acesso do Admin
+
+- O admin deve fazer login normalmente pela tela de `Login` (e-mail + senha). O fluxo de login consulta a API (`/api/cadastro`) pelo `firebaseUid` e, se o registro tiver `perfil: "admin"`, o usuário é redirecionado automaticamente para a rota `/painel-manicure`.
+- Para que o seed funcione com o login por e-mail/senha, crie um usuário correspondente no Firebase Authentication com o mesmo `ADMIN_FIREBASE_UID` (ou ajuste o UID no seed para bater com o usuário do Firebase) e use a `ADMIN_PASSWORD` definida.
