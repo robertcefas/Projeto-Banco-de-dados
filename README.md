@@ -75,6 +75,8 @@ npx prisma db seed
 
 No Vercel, adicione as mesmas variáveis de ambiente do projeto (Project Settings → Environment Variables). O `package.json` foi configurado para executar `prisma db seed` durante o `build`, então o admin será criado automaticamente ao fazer deploy.
 
+Observação de exemplo: o projeto inclui valores padrão de exemplo para facilitar testes — `ADMIN_EMAIL=admin@estudio.com` e `ADMIN_PASSWORD=123456`. Não deixe essas credenciais em produção; altere-as nas Environment Variables do Vercel.
+
 ## Como rodar localmente
 
 1. Instale as dependências:
