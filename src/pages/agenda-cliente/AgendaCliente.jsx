@@ -21,7 +21,7 @@ function AgendaCliente() {
   const [mostrandoPagamento, setMostrandoPagamento] = useState(false);
   const [agendamentoPendente, setAgendamentoPendente] = useState(null);
   const [copiadoPix, setCopiadoPix] = useState(false);
-  const whatsappLink = "https://wa.me/5571996740584"; // coloque o WhatsApp aqui
+  const whatsappLink = "https://wa.me/5571984224699"; // coloque o WhatsApp aqui
   const instagramLink =
     "https://www.instagram.com/evelinnaiils__?igsh=NXlnYmIyaTlwOHMx"; // coloque o Instagram aqui
 

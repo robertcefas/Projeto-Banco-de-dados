@@ -115,7 +115,7 @@ Os links estão em:
 Procure por:
 
 ```js
-const whatsappLink = "https://wa.me/5571996740584";
+const whatsappLink = "https://wa.me/5571984224699";
 const instagramLink = "https://www.instagram.com/evelinnaiils__?igsh=...";
 ```
 
