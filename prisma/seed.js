@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL ?? "admin@email.com";
+  const email = process.env.ADMIN_EMAIL ?? "admin@estudio.com";
   const nome = process.env.ADMIN_NOME ?? "Administrador";
   const firebaseUid = process.env.ADMIN_FIREBASE_UID ?? "seed-admin-uid";
-  const rawPassword = process.env.ADMIN_PASSWORD ?? "admin123";
+  const rawPassword = process.env.ADMIN_PASSWORD ?? "123456";
   const senha = await bcrypt.hash(rawPassword, 10);
 
   await prisma.usuario.upsert({

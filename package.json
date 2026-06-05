@@ -7,7 +7,7 @@
     "dev": "concurrently \"vite\" \"npm run dev:server\"",
     "dev:server": "node server.js",
     "set-admin": "node scripts/set-admin.js",
-    "build": "prisma db seed && vite build",
+    "build": "npx prisma generate && prisma db seed && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
