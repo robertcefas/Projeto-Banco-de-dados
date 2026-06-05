@@ -17,6 +17,46 @@ export default async function handler(req, res) {
         });
       }
 
+      const usuarioExistente = await prisma.usuario.findUnique({
+        where: { firebaseUid },
+      });
+
+      if (usuarioExistente) {
+        const dadosAtualizacao = {};
+        if (!usuarioExistente.telefone && telefone) {
+          dadosAtualizacao.telefone = telefone;
+        }
+        if (usuarioExistente.nome !== nome) {
+          dadosAtualizacao.nome = nome;
+        }
+        if (usuarioExistente.email !== email) {
+          dadosAtualizacao.email = email;
+        }
+
+        if (Object.keys(dadosAtualizacao).length > 0) {
+          const usuarioAtualizado = await prisma.usuario.update({
+            where: { firebaseUid },
+            data: dadosAtualizacao,
+          });
+
+          return res.status(200).json({
+            ok: true,
+            usuario: usuarioAtualizado,
+          });
+        }
+
+        return res.status(200).json({
+          ok: true,
+          usuario: usuarioExistente,
+        });
+      }
+
+      if (!telefone) {
+        return res.status(400).json({
+          erro: 'Telefone é obrigatório para criar um novo usuário.',
+        });
+      }
+
       const usuario = await prisma.usuario.create({
         data: {
           firebaseUid,
@@ -33,6 +73,19 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
+      const { firebaseUid } = req.query || {};
+
+      if (firebaseUid) {
+        const usuario = await prisma.usuario.findUnique({
+          where: { firebaseUid },
+        });
+
+        return res.status(200).json({
+          ok: true,
+          usuario,
+        });
+      }
+
       const usuarios = await prisma.usuario.findMany({
         orderBy: {
           criadoEm: 'desc',

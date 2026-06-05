@@ -26,12 +26,22 @@ function Cadastro() {
         ...formData,
         gender: id
       });
-    } else {
+      return;
+    }
+
+    if (id === 'phone') {
+      const apenasNumeros = value.replace(/\D/g, '').slice(0, 11);
       setFormData({
         ...formData,
-        [id]: value
+        phone: apenasNumeros
       });
+      return;
     }
+
+    setFormData({
+      ...formData,
+      [id]: value
+    });
   };
 
   const handleCadastro = async (e) => {
@@ -156,7 +166,10 @@ function Cadastro() {
               <input
                 type="tel"
                 id="phone"
-                placeholder="XX XXXXX-XXXX"
+                placeholder="11999998888"
+                inputMode="numeric"
+                maxLength={11}
+                value={formData.phone}
                 onChange={handleChange}
                 required
               />

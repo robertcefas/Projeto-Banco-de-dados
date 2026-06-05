@@ -45,22 +45,79 @@ function Login() {
     }
   };
 
-  // Função para o botão do Google (Cliente)
+  const fetchUsuarioPorUid = async (firebaseUid) => {
+    const resposta = await fetch(`/api/cadastro?firebaseUid=${encodeURIComponent(firebaseUid)}`);
+    if (!resposta.ok) return null;
+    const dados = await resposta.json();
+    return dados.usuario || null;
+  };
+
+  const solicitarTelefone = () => {
+    while (true) {
+      const valor = window.prompt(
+        'Por favor, informe seu número de telefone somente com números (DDD + número). Ex: 11999998888'
+      );
+      if (valor === null) {
+        return null;
+      }
+
+      const telefone = valor.replace(/\D/g, '');
+      if (telefone.length === 10 || telefone.length === 11) {
+        return telefone;
+      }
+
+      alert('Número inválido. Informe 10 ou 11 dígitos numéricos.');
+    }
+  };
+
   const handleGoogleLogin = async () => {
     try {
       const resultado = await signInWithPopup(auth, provider);
       const usuario = resultado.user;
+
+      const usuarioExistente = await fetchUsuarioPorUid(usuario.uid);
+      let telefone = usuario.phoneNumber ? usuario.phoneNumber.replace(/\D/g, '') : '';
+
+      if (usuarioExistente?.telefone) {
+        telefone = usuarioExistente.telefone;
+      }
+
+      if (!telefone) {
+        telefone = solicitarTelefone();
+        if (!telefone) {
+          alert('O número de telefone é obrigatório para continuar.');
+          return;
+        }
+      }
+
+      const resposta = await fetch('/api/cadastro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firebaseUid: usuario.uid,
+          nome: usuario.displayName || 'Cliente',
+          email: usuario.email,
+          telefone,
+        }),
+      });
+
+      if (!resposta.ok) {
+        const dados = await resposta.json();
+        throw new Error(dados.erro || 'Erro ao salvar o usuário no banco de dados.');
+      }
+
       localStorage.setItem('usuarioLogado', JSON.stringify({
-        nome: usuario.displayName,
-        email: usuario.email
+        nome: usuario.displayName || 'Cliente',
+        email: usuario.email,
       }));
-      
-      console.log("Login feito com sucesso! Bem-vinda:", usuario.displayName);
-      navigate('/agenda-cliente'); 
-      
+
+      console.log('Login feito com sucesso! Bem-vinda:', usuario.displayName);
+      navigate('/agenda-cliente');
     } catch (erro) {
-      console.error("Erro ao fazer login com o Google:", erro);
-      alert("Houve um erro ao tentar fazer o login pelo Google.");
+      console.error('Erro ao fazer login com o Google:', erro);
+      alert(erro.message || 'Houve um erro ao tentar fazer o login pelo Google.');
     }
   };
 
