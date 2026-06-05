@@ -7,11 +7,15 @@
     "dev": "concurrently \"vite\" \"npm run dev:server\"",
     "dev:server": "node server.js",
     "set-admin": "node scripts/set-admin.js",
-    "build": "vite build",
+    "build": "prisma db seed && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "@prisma/client": "^6.19.3",
     "@vercel/postgres": "^0.10.0",
     "dotenv": "^17.4.2",
