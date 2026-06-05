@@ -10,7 +10,7 @@ const configurarAdmin = () => {
     usuarios.push({
       nome: "Admin Manicure",
       email: "admin@estudio.com",
-      senha: "123",
+      senha: "123456",
       tipo: "manicure",
     });
     localStorage.setItem("usuarios", JSON.stringify(usuarios));

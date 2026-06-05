@@ -1,339 +1,280 @@
-/* Configurações Gerais */
+/* Configurações Gerais - MOBILE EXCLUSIVO */
 :root {
-  --primary: #1877f2;
-  --bg-body: #f0f2f5;
-  --text-main: #1c1e21;
-  --text-muted: #8d949e;
+  --primary: #8e44ad;
+  --primary-hover: #71368f;
+  --bg-body: #f3f4f8;
+  --text-main: #1f2330;
+  --text-muted: #6f7480;
   --white: #ffffff;
-  --red: #fa3e3e;
+  --red: #e74c3c;
   --green: #2ecc71;
-  --border: #ebedf0;
+  --border: #e6e8f2;
+  --surface: #ffffff;
+  --shadow: 0 12px 35px rgba(142, 68, 173, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-body);
+  font-family: "Inter", -apple-system, sans-serif;
+  color: var(--text-main);
+  -webkit-text-size-adjust: 100%;
 }
 
 .painel-wrapper {
   min-height: 100vh;
-  background: var(--bg-body);
-  font-family: 'Inter', -apple-system, sans-serif;
-  color: var(--text-main);
 }
 
-/* Barra de Navegação Superior */
+/* Barra de Navegação */
 .painel-nav {
   background: var(--white);
-  padding: 0.8rem 5%;
+  padding: 1rem 4%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
 .logo-admin {
-  font-size: 1.2rem;
-  color: var(--text-main);
-  letter-spacing: -0.5px;
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
 .btn-logout {
   background: #f1f2f6;
   border: none;
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-radius: 8px;
-  cursor: pointer;
   font-weight: 600;
-  transition: 0.3s;
+  font-size: 0.8rem;
 }
 
-.btn-logout:hover {
-  background: #dfe4ea;
-}
-
-/* Layout do Grid */
+/* Layout Grid 1 Coluna Direta */
 .painel-grid {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
-  padding: 24px 5%;
-  max-width: 1400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 4%;
 }
 
-/* Estilo Comum dos Cards */
+.coluna-esquerda, .coluna-direita {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Estilo Base dos Cards */
 .card-admin {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
 }
 
 .titulo-secao {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin: 0 0 14px 0;
   color: #2d3436;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Tabela de Agendamentos */
-.tabela-container {
-  overflow-x: auto;
+/* ==========================================================================
+   SISTEMA DE TABELA HORIZONTALMENTE RESPONSÍVEL (EVITA ENROLAÇÕES)
+   ========================================================================== */
+.tabela-scroll-container {
+  width: 100%;
+  overflow-x: auto; /* Permite arrastar pro lado caso o celular seja pequeno */
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
-table {
+.tabela-agendamentos {
   width: 100%;
   border-collapse: collapse;
-}
-
-th {
   text-align: left;
-  padding: 12px;
-  font-size: 0.75rem;
+  min-width: 480px; /* Garante que a tabela tenha espaço fixo sem se espremer */
+}
+
+.tabela-agendamentos th {
+  background: #faf9fc;
   color: var(--text-muted);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 10px 8px;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border);
 }
 
-td {
-  padding: 16px 12px;
-  border-bottom: 1px solid #f0f2f5;
-  font-size: 0.9rem;
+.tabela-agendamentos td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #f0f0f5;
+  font-size: 0.82rem;
+  vertical-align: middle;
 }
 
+/* Customização inteligente de colunas individuais */
 .link-nome {
   background: none;
   border: none;
   color: var(--primary);
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: left;
   padding: 0;
-  text-decoration: none;
-}
-
-.link-nome:hover {
   text-decoration: underline;
+  word-break: break-all;
 }
 
-.btn-concluir {
-  background: var(--red);
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
+.col-servico {
+  font-weight: 500;
+  color: #555;
+  max-width: 90px;
+  word-break: break-word;
+}
+
+.col-data {
+  font-size: 0.78rem !important;
+  white-space: nowrap;
+}
+.col-data span {
   font-weight: 600;
-  cursor: pointer;
-  font-size: 0.85rem;
+  color: #2c3e50;
 }
 
-/* Gestão de Serviços/Produtos */
-.mt-20 { margin-top: 24px; }
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Alinhamento empilhado dos botões na tabela mobile */
+.celula-botoes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 85px;
+}
+
+.btn-adiantar, .btn-concluir {
+  width: 100%;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-adiantar { background: var(--primary); color: white; }
+.btn-concluir { background: var(--red); color: white; }
+
+.sem-dados {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 20px 0;
+}
+
+/* ==========================================================================
+   OUTROS COMPONENTES (PRODUTOS / CALENDÁRIO)
+   ========================================================================== */
+.mt-20 { margin-top: 4px; }
 
 .btn-add-servico {
   background: var(--green);
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.8rem;
-  cursor: pointer;
+  font-weight: 600;
 }
 
 .form-servico {
   background: #f8f9fa;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  border: 1px dashed #cbd5e0;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .form-servico input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  box-sizing: border-box;
 }
 
-.form-btns {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-save-s { background: var(--text-main); color: white; flex: 1; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
-.btn-cancel-s { background: #dfe4ea; flex: 1; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
+.form-btns { display: flex; gap: 6px; }
+.btn-save-s { background: var(--text-main); color: white; flex: 1; border: none; padding: 8px; border-radius: 6px; }
+.btn-cancel-s { background: #dfe4ea; color: var(--text-main); flex: 1; border: none; padding: 8px; border-radius: 6px; }
 
 .lista-produtos { list-style: none; padding: 0; margin: 0; }
 .lista-produtos li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 5px;
+  padding: 8px 0;
   border-bottom: 1px solid #f0f2f5;
 }
 
-.acoes button {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-weight: bold;
-  cursor: pointer;
-  margin-left: 10px;
-  font-size: 0.75rem;
-}
-
+.produto-texto { font-size: 0.85rem; }
+.acoes { display: flex; gap: 4px; }
+.acoes button { background: none; border: none; color: var(--primary); font-weight: bold; font-size: 0.75rem; }
 .acoes .txt-red { color: var(--red); }
 
-/* Calendário Lateral */
-.agenda-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
+/* Calendário */
+.agenda-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.agenda-nav button { background: #f1f2f6; border: none; width: 34px; height: 34px; border-radius: 50%; }
+.agenda-nav h3 { font-size: 0.95rem; margin: 0; text-transform: capitalize; }
 
-.agenda-nav button {
-  background: #f1f2f6;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-}
+.calendario-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.dia-semana-header { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); }
 
-.calendario-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-bottom: 20px;
-}
-
+.calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .dia-box {
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.dia-box.on {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
-}
-
-.dia-box.off {
-  background: #ffebee;
-  color: #c62828;
-  text-decoration: line-through;
-  border: 1px solid #ffcdd2;
-}
-
-/* Configuração de Horários */
-.btn-collapse {
-  width: 100%;
-  padding: 10px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--primary);
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 15px;
-}
-
-.horas-config {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.horas-config input {
-  padding: 8px;
-  border: 1px solid #ddd;
   border-radius: 6px;
-}
-
-.btn-principal {
-  width: 100%;
-  padding: 14px;
-  background: #2d3436;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  font-size: 0.75rem;
   font-weight: 700;
-  cursor: pointer;
-  transition: 0.3s;
 }
+.dia-blank { aspect-ratio: 1; }
+.dia-box.on { background: #e8f5e9; color: #2e7d32; }
+.dia-box.off { background: #ffebee; color: #c62828; text-decoration: line-through; }
 
-.btn-principal:hover {
-  background: #000;
-}
+.btn-collapse { width: 100%; padding: 10px; background: #fff; border: 1px solid var(--border); border-radius: 6px; color: var(--primary); font-weight: bold; margin: 10px 0; font-size: 0.85rem; }
+.horas-config { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: #f8f9fa; padding: 8px; border-radius: 6px; }
+.horas-config input { padding: 6px; border: 1px solid #ddd; border-radius: 6px; width: 42%; }
 
-/* Modal do Cliente (Perfil) */
-.modal-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
+.btn-principal { width: 100%; padding: 12px; background: #2d3436; color: white; border: none; border-radius: 8px; font-weight: 700; margin-top: 10px; font-size: 0.9rem; }
 
-.modal-perfil {
-  background: var(--white);
-  width: 90%;
-  max-width: 340px;
-  padding: 2rem;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
+/* Modais */
+.modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+.modal-perfil, .modal-adiantamento { background: var(--white); width: 100%; max-width: 300px; padding: 16px; border-radius: 12px; }
+.perfil-avatar { width: 44px; height: 44px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: bold; }
+.perfil-dados { text-align: left; font-size: 0.8rem; margin-bottom: 12px; }
+.btn-close { width: 100%; padding: 8px; background: #2d3436; color: white; border: none; border-radius: 6px; }
 
-.perfil-avatar {
-  width: 70px;
-  height: 70px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 15px;
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
-.perfil-dados {
-  text-align: left;
-  margin: 20px 0;
-  line-height: 1.8;
-  font-size: 0.95rem;
-}
-
-.btn-close {
-  width: 100%;
-  padding: 12px;
-  background: #2d3436;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.info-agendamento-modal { background: #f8f9fa; padding: 8px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 10px; }
+.input-hora-adiantada { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ddd; border-radius: 6px; }
+.botoes-adiantamento { display: flex; gap: 4px; margin-top: 10px; }
+.btn-cancelar-modal, .btn-remover-adiantamento, .btn-salvar-adiantamento { flex: 1; border: none; padding: 8px; border-radius: 6px; font-size: 0.75rem; }
+.btn-cancelar-modal { background: #f1f2f6; }
+.btn-remover-adiantamento { background: #fce9e9; color: var(--red); }
+.btn-salvar-adiantamento { background: var(--primary); color: white; }

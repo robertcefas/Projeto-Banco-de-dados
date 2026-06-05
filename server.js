@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import dotenv from "dotenv";
+import express from "express";
+import { PrismaClient } from "@prisma/client";
 
 dotenv.config();
 
@@ -9,13 +9,13 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/cadastro', async (req, res) => {
+app.post("/api/cadastro", async (req, res) => {
   try {
     const { firebaseUid, nome, email, telefone } = req.body;
 
     if (!firebaseUid || !nome || !email) {
       return res.status(400).json({
-        erro: 'firebaseUid, nome e email são obrigatórios.',
+        erro: "firebaseUid, nome e email são obrigatórios.",
       });
     }
 
@@ -40,11 +40,24 @@ app.post('/api/cadastro', async (req, res) => {
   }
 });
 
-app.get('/api/cadastro', async (req, res) => {
+app.get("/api/cadastro", async (req, res) => {
   try {
+    const { firebaseUid } = req.query || {};
+
+    if (firebaseUid) {
+      const usuario = await prisma.usuario.findUnique({
+        where: { firebaseUid },
+      });
+
+      return res.status(200).json({
+        ok: true,
+        usuario,
+      });
+    }
+
     const usuarios = await prisma.usuario.findMany({
       orderBy: {
-        criadoEm: 'desc',
+        criadoEm: "desc",
       },
     });
 
@@ -60,8 +73,8 @@ app.get('/api/cadastro', async (req, res) => {
   }
 });
 
-app.use('/api', (req, res) => {
-  res.status(404).json({ erro: 'Rota de API não encontrada.' });
+app.use("/api", (req, res) => {
+  res.status(404).json({ erro: "Rota de API não encontrada." });
 });
 
 const port = process.env.PORT || 4000;
