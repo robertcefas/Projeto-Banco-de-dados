@@ -32,14 +32,19 @@ function Login() {
         console.warn('Erro ao buscar usuário no BD:', err);
       }
 
-      // 3. Salva o usuário no cofre para a Agenda não expulsá-lo
+      // 3. Determina perfil (fallback para admin pelo e-mail) e salva no cofre
+      const perfil = (usuarioBD && usuarioBD.perfil)
+        ? usuarioBD.perfil
+        : (usuario.email === 'admin@estudio.com' ? 'admin' : 'cliente');
+
       localStorage.setItem('usuarioLogado', JSON.stringify({
         nome: usuario.displayName || (usuarioBD && usuarioBD.nome) || 'Cliente',
-        email: usuario.email
+        email: usuario.email,
+        perfil,
       }));
 
-      // 4. Verifica perfil vindo do banco e redireciona
-      if (usuarioBD && usuarioBD.perfil === 'admin') {
+      // 4. Redireciona conforme o perfil (inclui fallback por e-mail)
+      if (perfil === 'admin') {
         console.log('Login Admin feito com sucesso!');
         navigate('/painel-manicure');
       } else {
@@ -123,6 +128,7 @@ function Login() {
       localStorage.setItem('usuarioLogado', JSON.stringify({
         nome: usuario.displayName || 'Cliente',
         email: usuario.email,
+        perfil: usuarioExistente?.perfil || 'cliente',
       }));
 
       console.log('Login feito com sucesso! Bem-vinda:', usuario.displayName);
