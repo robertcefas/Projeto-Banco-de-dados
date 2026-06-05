@@ -20,19 +20,31 @@ function Login() {
       const credencial = await signInWithEmailAndPassword(auth, email, senha);
       const usuario = credencial.user;
 
-      // 2. Salva o usuário no cofre para a Agenda não expulsá-lo
+      // 2. Busca o usuário no BD pelo firebaseUid para verificar o perfil
+      let usuarioBD = null;
+      try {
+        const resp = await fetch(`/api/cadastro?firebaseUid=${encodeURIComponent(usuario.uid)}`);
+        if (resp.ok) {
+          const dados = await resp.json();
+          usuarioBD = dados.usuario || null;
+        }
+      } catch (err) {
+        console.warn('Erro ao buscar usuário no BD:', err);
+      }
+
+      // 3. Salva o usuário no cofre para a Agenda não expulsá-lo
       localStorage.setItem('usuarioLogado', JSON.stringify({
-        nome: usuario.displayName || 'Cliente', // Pega o nome ou deixa como Cliente
+        nome: usuario.displayName || (usuarioBD && usuarioBD.nome) || 'Cliente',
         email: usuario.email
       }));
-      
-      // 3. Verifica para qual tela ele deve ir
-      if (email === 'admin@estudio.com') {
-        console.log("Login Admin feito com sucesso!");
-        navigate('/painel-manicure'); 
+
+      // 4. Verifica perfil vindo do banco e redireciona
+      if (usuarioBD && usuarioBD.perfil === 'admin') {
+        console.log('Login Admin feito com sucesso!');
+        navigate('/painel-manicure');
       } else {
-        console.log("Login Cliente feito com sucesso!");
-        navigate('/agenda-cliente'); // Ajuste a rota se for '/agendacliente'
+        console.log('Login Cliente feito com sucesso!');
+        navigate('/agenda-cliente');
       }
       
     } catch (erro) {
